@@ -82,7 +82,7 @@ func (d *Decoder) expectTag(expected Tag) error {
 		return err
 	}
 
-	if expected != t {
+	if expected != t && expected != ANY_TAG {
 		return errors.Errorf("expecting tag %x, but %x was encountered", expected, t)
 	}
 
@@ -179,6 +179,10 @@ func (d *Decoder) decodeValue(f field, t reflect.Type, ff reflect.Value) (n int,
 
 		n = 8
 
+		if l%8 != 0 {
+			l += 8 - l%8
+		}
+
 		_, err = io.CopyN(ioutil.Discard, d.r, int64(l))
 		n += int(l)
 
@@ -197,6 +201,12 @@ func (d *Decoder) decodeValue(f field, t reflect.Type, ff reflect.Value) (n int,
 		n = 16
 	case BOOLEAN:
 		v, err = d.readBool(f.tag)
+		n = 16
+	case DATE_TIME:
+		v, err = d.readTime(f.tag)
+		n = 16
+	case INTERVAL:
+		v, err = d.readDuration(f.tag)
 		n = 16
 	case BYTE_STRING:
 		n, v, err = d.readBytes(f.tag)
@@ -294,7 +304,7 @@ func (d *Decoder) decode(rv reflect.Value, structD *structDesc) (n int, err erro
 			return
 		}
 
-		if !f.required && tag != f.tag {
+		if !f.required && tag != f.tag && f.tag != ANY_TAG {
 			continue
 		}
 

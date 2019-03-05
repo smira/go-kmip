@@ -63,44 +63,41 @@ func getStructDesc(tt reflect.Type) (*structDesc, error) {
 			idx:  ff.Index,
 		}
 
-		if name == "-" {
-			f.skip = true
-		} else {
-			var ok bool
-			if f.tag, ok = tagMap[name]; !ok {
-				return nil, errors.Errorf("unknown tag %v for field %v", name, ff.Name)
-			}
+		var ok bool
+		if f.tag, ok = tagMap[name]; !ok {
+			return nil, errors.Errorf("unknown tag %v for field %v", name, ff.Name)
+		}
 
-			f.required = strings.Contains(opt, "required")
+		f.required = strings.Contains(opt, "required")
+		f.skip = strings.Contains(opt, "skip")
 
-			ft := ff.Type
-			if ft.Kind() == reflect.Slice && ft != typeOfBytes {
-				f.sliceof = true
-				ft = ft.Elem()
-			}
+		ft := ff.Type
+		if ft.Kind() == reflect.Slice && ft != typeOfBytes {
+			f.sliceof = true
+			ft = ft.Elem()
+		}
 
-			switch ft {
-			case typeOfInt32:
-				f.typ = INTEGER
-			case typeOfInt64:
-				f.typ = LONG_INTEGER
-			case typeOfEnum:
-				f.typ = ENUMERATION
-			case typeOfBool:
-				f.typ = BOOLEAN
-			case typeOfBytes:
-				f.typ = BYTE_STRING
-			case typeOfString:
-				f.typ = TEXT_STRING
-			default:
-				if ft.Kind() == reflect.Struct {
-					f.typ = STRUCTURE
-				} else if ft.Kind() == reflect.Interface {
-					f.typ = STRUCTURE
-					f.dynamic = true
-				} else {
-					return nil, errors.Errorf("unsupported type %s for field %v", ft.String(), ff.Name)
-				}
+		switch ft {
+		case typeOfInt32:
+			f.typ = INTEGER
+		case typeOfInt64:
+			f.typ = LONG_INTEGER
+		case typeOfEnum:
+			f.typ = ENUMERATION
+		case typeOfBool:
+			f.typ = BOOLEAN
+		case typeOfBytes:
+			f.typ = BYTE_STRING
+		case typeOfString:
+			f.typ = TEXT_STRING
+		default:
+			if ft.Kind() == reflect.Struct {
+				f.typ = STRUCTURE
+			} else if ft.Kind() == reflect.Interface {
+				f.typ = STRUCTURE
+				f.dynamic = true
+			} else {
+				return nil, errors.Errorf("unsupported type %s for field %v", ft.String(), ff.Name)
 			}
 		}
 

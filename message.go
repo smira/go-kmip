@@ -44,22 +44,6 @@ type ProtocolVersion struct {
 	Minor int32 `kmip:"PROTOCOL_VERSION_MINOR"`
 }
 
-// Authentication is an Authentication structure
-type Authentication struct {
-	Tag `kmip:"AUTHENTICATION"`
-
-	CredentialType  Enum        `kmip:"CREDENTIAL_TYPE,required"`
-	CredentialValue interface{} `kmip:"CREDENTIAL_VALUE,required"`
-}
-
-// CredentialUsernamePassword is a Credential structure for username/password authentication
-type CredentialUsernamePassword struct {
-	Tag `kmip:"CREDENTIAL_VALUE"`
-
-	Username string `kmip:"USERNAME,required"`
-	Password string `kmip:"PASSWORD,required"`
-}
-
 // BatchItem is a Batch Item Structure
 type BatchItem struct {
 	Tag `kmip:"REQUEST_BATCH_ITEM"`
@@ -70,6 +54,7 @@ type BatchItem struct {
 	MessageExtension MessageExtension `kmip:"MESSAGE_EXTENSION"`
 }
 
+// BuildFieldValue builds value for RequestPayload based on Operation
 func (bi *BatchItem) BuildFieldValue(name string) (v interface{}, err error) {
 	switch bi.Operation {
 	case OPERATION_CREATE:
@@ -89,7 +74,7 @@ type MessageExtension struct {
 
 	VendorIdentification string      `kmip:"VENDOR_IDENTIFICATION,required"`
 	CriticalityIndicator bool        `kmip:"CRITICALITY_INDICATOR,required"`
-	VendorExtension      interface{} `kmip:"-"`
+	VendorExtension      interface{} `kmip:"-,skip"`
 }
 
 // TemplateAttribute is a Template-Attribute Object Structure

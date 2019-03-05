@@ -136,6 +136,41 @@ func (s *DecoderSuite) TestDecodeStruct() {
 	s.Assert().EqualValues(255, v.B)
 }
 
+func (s *DecoderSuite) TestDecodeStructSkip() {
+	type tt struct {
+		Tag   `kmip:"COMPROMISE_DATE"`
+		Other string
+		A     Enum  `kmip:"APPLICATION_SPECIFIC_INFORMATION,required"`
+		B     int32 `kmip:"ARCHIVE_DATE,skip"`
+	}
+
+	var v tt
+
+	err := NewDecoder(bytes.NewReader(s.parseSpecValue("42 00 20 | 01 | 00 00 00 20 | 42 00 04 | 05 | 00 00 00 04 | 00 00 00 FE 00 00 00 00 |" +
+		" 42 00 05 | 02 | 00 00 00 04 | 00 00 00 FF 00 00 00 00"))).Decode(&v)
+	s.Assert().NoError(err)
+
+	s.Assert().EqualValues(254, v.A)
+	s.Assert().EqualValues(0, v.B)
+}
+
+func (s *DecoderSuite) TestDecodeStructSkipAny() {
+	type tt struct {
+		Tag `kmip:"COMPROMISE_DATE"`
+		A   Enum        `kmip:"APPLICATION_SPECIFIC_INFORMATION"`
+		B   interface{} `kmip:"-,skip"`
+	}
+
+	var v tt
+
+	err := NewDecoder(bytes.NewReader(s.parseSpecValue("42 00 20 | 01 | 00 00 00 20 | 42 00 04 | 05 | 00 00 00 04 | 00 00 00 FE 00 00 00 00 |" +
+		" 42 00 05 | 02 | 00 00 00 04 | 00 00 00 FF 00 00 00 00"))).Decode(&v)
+	s.Assert().NoError(err)
+
+	s.Assert().EqualValues(254, v.A)
+	s.Assert().EqualValues(nil, v.B)
+}
+
 func (s *DecoderSuite) TestDecodeMessageCreate() {
 	var m Request
 

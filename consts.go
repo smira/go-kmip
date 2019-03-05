@@ -6,6 +6,8 @@ package kmip
 
 // KMIP Tags
 const (
+	// Internal
+	ANY_TAG Tag = 0xffffff
 	// KMIP 1.0
 	ACTIVATION_DATE                        Tag = 0x420001
 	APPLICATION_DATA                       Tag = 0x420002
@@ -528,7 +530,23 @@ const (
 	CRYPTO_ED448             Enum = 0x00000038
 )
 
+// KMIP Credential Type
+const (
+	// KMIP 1.0
+	CREDENTIAL_TYPE_USERNAME_AND_PASSWORD Enum = 0x00000001
+	// KMIP 1.1
+	CREDENTIAL_TYPE_DEVICE Enum = 0x00000002
+	// KMIP 1.2
+	CREDENTIAL_TYPE_ATTESTATION Enum = 0x00000003
+	// KMIP 2.0
+	CREDENTIAL_TYPE_ONE_TIME_PASSWORD Enum = 0x00000004
+	CREDENTIAL_TYPE_HASHED_PASSWORD   Enum = 0x00000005
+	CREDENTIAL_TYPE_TICKET            Enum = 0x00000006
+)
+
 var tagMap = map[string]Tag{
+	"-":                                        ANY_TAG,
+	"ANY_TAG":                                  ANY_TAG,
 	"ACTIVATION_DATE":                          ACTIVATION_DATE,
 	"APPLICATION_DATA":                         APPLICATION_DATA,
 	"APPLICATION_NAMESPACE":                    APPLICATION_NAMESPACE,

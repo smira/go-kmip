@@ -4,7 +4,7 @@ package kmip
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-// KeyWrappingSpecificiation is a Key Wrapping Specification Object
+// KeyWrappingSpecification is a Key Wrapping Specification Object
 type KeyWrappingSpecification struct {
 	Tag `kmip:"KEY_WRAPPING_SPECIFICATION"`
 
