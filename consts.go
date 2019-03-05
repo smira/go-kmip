@@ -4,6 +4,7 @@ package kmip
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+// KMIP Tags
 const (
 	// KMIP 1.0
 	ACTIVATION_DATE                        Tag = 0x420001
@@ -369,6 +370,7 @@ const (
 	ADJUSTMENT_VALUE          Tag = 0x420162
 )
 
+// KMIP Types
 const (
 	STRUCTURE    Type = 0x01
 	INTEGER      Type = 0x02
@@ -382,6 +384,7 @@ const (
 	INTERVAL     Type = 0x0A
 )
 
+// KMIP Operations
 const (
 	// KMIP 1.0
 	OPERATION_CREATE               Enum = 0x00000001
@@ -443,6 +446,7 @@ const (
 	OPERATION_REPROVISION       Enum = 0x00000035
 )
 
+// KMIP Object Types
 const (
 	// KMIP 1.0
 	OBJECT_TYPE_CERTIFICATE   Enum = 0x00000001
@@ -459,6 +463,7 @@ const (
 	OBJECT_TYPE_CERTIFICATE_REQUEST Enum = 0x0000000A
 )
 
+// KMIP Crypto Algorithms
 const (
 	// KMIP 1.0
 	CRYPTO_DES         Enum = 0x00000001

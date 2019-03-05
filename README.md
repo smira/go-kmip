@@ -4,6 +4,7 @@ go-kmip
 [![Build Status](https://travis-ci.org/smira/go-kmip.svg?branch=master)](https://travis-ci.org/smira/go-kmip)
 [![codecov](https://codecov.io/gh/smira/go-kmip/branch/master/graph/badge.svg)](https://codecov.io/gh/smira/go-kmip)
 [![Documentation](https://godoc.org/github.com/smira/go-kmip?status.svg)](http://godoc.org/github.com/smira/go-kmip)
+[![Go Report Card](https://goreportcard.com/badge/github.com/smira/go-kmip)](https://goreportcard.com/report/github.com/smira/go-kmip)
 
 go-kmip implements subset of [KMIP 1.4](http://docs.oasis-open.org/kmip/spec/v1.4/os/kmip-spec-v1.4-os.html) protocol.
 

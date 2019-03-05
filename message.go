@@ -107,4 +107,3 @@ type Name struct {
 	Value string `kmip:"NAME_VALUE,required"`
 	Type  Enum   `kmip:"NAME_TYPE,required"`
 }
-
