@@ -1,10 +1,15 @@
 package kmip
 
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 import (
 	"bytes"
 	"encoding/hex"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/suite"
 )
@@ -97,6 +102,97 @@ func (s *DecoderSuite) TestReadBytes() {
 	s.Assert().NoError(err)
 	s.Assert().EqualValues([]byte{1, 2, 3}, v)
 	s.Assert().EqualValues(16, n)
+}
+
+func (s *DecoderSuite) TestReadTime() {
+	v, err := NewDecoder(bytes.NewReader(s.parseSpecValue("42 00 20 | 09 | 00 00 00 08 | 00 00 00 00 47 DA 67 F8"))).readTime(COMPROMISE_DATE)
+	s.Assert().NoError(err)
+	s.Assert().Equal("2008-03-14T11:56:40Z", v.UTC().Format(time.RFC3339))
+}
+
+func (s *DecoderSuite) TestReadDuration() {
+	v, err := NewDecoder(bytes.NewReader(s.parseSpecValue("42 00 20 | 0A | 00 00 00 04 | 00 0D 2F 00 00 00 00 00"))).readDuration(COMPROMISE_DATE)
+	s.Assert().NoError(err)
+	s.Assert().Equal(10*24*time.Hour, v)
+}
+
+func (s *DecoderSuite) TestDecodeStruct() {
+	type tt struct {
+		Tag   `kmip:"COMPROMISE_DATE"`
+		Other string
+		A     Enum   `kmip:"APPLICATION_SPECIFIC_INFORMATION,required"`
+		B     int32  `kmip:"ARCHIVE_DATE,required"`
+		C     string `kmip:"COMPROMISE_DATE"`
+		D     []byte `kmip:"ACTIVATION_DATE"`
+	}
+
+	var v tt
+
+	err := NewDecoder(bytes.NewReader(s.parseSpecValue("42 00 20 | 01 | 00 00 00 20 | 42 00 04 | 05 | 00 00 00 04 | 00 00 00 FE 00 00 00 00 |" +
+		" 42 00 05 | 02 | 00 00 00 04 | 00 00 00 FF 00 00 00 00"))).Decode(&v)
+	s.Assert().NoError(err)
+
+	s.Assert().EqualValues(254, v.A)
+	s.Assert().EqualValues(255, v.B)
+}
+
+func (s *DecoderSuite) TestDecodeMessageCreate() {
+	var m Request
+
+	err := NewDecoder(bytes.NewReader(messageCreate)).Decode(&m)
+	s.Assert().NoError(err)
+	s.Assert().Equal(
+		Request{
+			Header: RequestHeader{
+				Version:    ProtocolVersion{Major: 1, Minor: 1},
+				BatchCount: 1,
+			},
+			BatchItems: []BatchItem{
+				{
+					Operation: OPERATION_CREATE,
+					RequestPayload: OperationCreate{
+						ObjectType: OBJECT_TYPE_SYMMETRIC_KEY,
+						TemplateAttribute: TemplateAttribute{
+							Attributes: []Attribute{
+								{
+									Name:  "Cryptographic Algorithm",
+									Value: CRYPTO_AES,
+								},
+								{
+									Name:  "Cryptographic Length",
+									Value: int32(128),
+								},
+								{
+									Name:  "Cryptographic Usage Mask",
+									Value: int32(12),
+								},
+							},
+						},
+					},
+				},
+			},
+		}, m)
+}
+
+func (s *DecoderSuite) TestDecodeMessageGet() {
+	var m Request
+
+	err := NewDecoder(bytes.NewReader(messageGet)).Decode(&m)
+	s.Assert().NoError(err)
+	s.Assert().Equal(Request{
+		Header: RequestHeader{
+			Version:    ProtocolVersion{Major: 1, Minor: 1},
+			BatchCount: 1,
+		},
+		BatchItems: []BatchItem{
+			{
+				Operation: OPERATION_GET,
+				RequestPayload: OperationGet{
+					UniqueIdentifier: "49a1ca88-6bea-4fb2-b450-7e58802c3038",
+				},
+			},
+		},
+	}, m)
 }
 
 func TestDecoderSuite(t *testing.T) {

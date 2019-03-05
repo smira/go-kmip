@@ -1,9 +1,15 @@
 package kmip
 
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 import (
 	"bufio"
 	"encoding/binary"
 	"io"
+	"io/ioutil"
+	"reflect"
 
 	"github.com/pkg/errors"
 )
@@ -12,6 +18,8 @@ import (
 type Decoder struct {
 	r io.Reader
 	s io.ByteScanner
+
+	lastTag Tag
 }
 
 // NewDecoder builds Decoder which reads from r
@@ -34,7 +42,7 @@ func NewDecoder(r io.Reader) *Decoder {
 	return d
 }
 
-func (d *Decoder) readTag() (t Tag, err error) {
+func (d *Decoder) internalReadTag() (t Tag, err error) {
 	var b [3]byte
 
 	_, err = io.ReadFull(d.r, b[:])
@@ -43,6 +51,27 @@ func (d *Decoder) readTag() (t Tag, err error) {
 	}
 
 	t = Tag(binary.BigEndian.Uint32(append([]byte{0}, b[:]...)))
+
+	return
+}
+
+func (d *Decoder) readTag() (t Tag, err error) {
+	if d.lastTag != 0 {
+		t, d.lastTag = d.lastTag, 0
+		return
+	}
+
+	t, err = d.internalReadTag()
+	return
+}
+
+func (d *Decoder) peekTag() (t Tag, err error) {
+	if d.lastTag != 0 {
+		return d.lastTag, nil
+	}
+
+	d.lastTag, err = d.internalReadTag()
+	t = d.lastTag
 
 	return
 }
@@ -108,175 +137,223 @@ func (d *Decoder) expectLength(expected uint32) error {
 	return nil
 }
 
-func (d *Decoder) readInteger(expectedTag Tag) (v int32, err error) {
-	if err = d.expectTag(expectedTag); err != nil {
-		return
+// Decode structure from the reader into v
+func (d *Decoder) Decode(v interface{}) error {
+	rv := reflect.ValueOf(v)
+	if !rv.IsValid() {
+		return errors.New("invalid value")
+	}
+	if rv.Kind() == reflect.Ptr {
+		rv = rv.Elem()
+	}
+	if !rv.IsValid() {
+		return errors.New("invalid pointer value")
+	}
+	if !rv.CanSet() {
+		return errors.New("unsettable value")
 	}
 
-	if err = d.expectType(INTEGER); err != nil {
-		return
-	}
-
-	if err = d.expectLength(4); err != nil {
-		return
-	}
-
-	var b [4]byte
-
-	_, err = io.ReadFull(d.r, b[:])
+	structDesc, err := getStructDesc(rv.Type())
 	if err != nil {
-		return
+		return err
 	}
 
-	v = int32(binary.BigEndian.Uint32(b[:]))
-
-	// padding
-	_, err = io.ReadFull(d.r, b[:])
-	if err != nil {
-		return
-	}
-
-	return
+	_, err = d.decode(rv, structDesc)
+	return err
 }
 
-func (d *Decoder) readLongInteger(expectedTag Tag) (v int64, err error) {
-	if err = d.expectTag(expectedTag); err != nil {
-		return
-	}
-
-	if err = d.expectType(LONG_INTEGER); err != nil {
-		return
-	}
-
-	if err = d.expectLength(8); err != nil {
-		return
-	}
-
-	var b [8]byte
-
-	_, err = io.ReadFull(d.r, b[:])
-	if err != nil {
-		return
-	}
-
-	v = int64(binary.BigEndian.Uint64(b[:]))
-
-	return
-}
-
-func (d *Decoder) readEnum(expectedTag Tag) (v Enum, err error) {
-	if err = d.expectTag(expectedTag); err != nil {
-		return
-	}
-
-	if err = d.expectType(ENUMERATION); err != nil {
-		return
-	}
-
-	if err = d.expectLength(4); err != nil {
-		return
-	}
-
-	var b [4]byte
-
-	_, err = io.ReadFull(d.r, b[:])
-	if err != nil {
-		return
-	}
-
-	v = Enum(binary.BigEndian.Uint32(b[:]))
-
-	// padding
-	_, err = io.ReadFull(d.r, b[:])
-	if err != nil {
-		return
-	}
-
-	return
-}
-
-func (d *Decoder) readBool(expectedTag Tag) (v bool, err error) {
-	if err = d.expectTag(expectedTag); err != nil {
-		return
-	}
-
-	if err = d.expectType(BOOLEAN); err != nil {
-		return
-	}
-
-	if err = d.expectLength(8); err != nil {
-		return
-	}
-
-	var b [8]byte
-
-	_, err = io.ReadFull(d.r, b[:])
-	if err != nil {
-		return
-	}
-
-	for i := 0; i < 7; i++ {
-		if b[i] != 0 {
-			err = errors.Errorf("unexpected boolean value: %v", b)
+func (d *Decoder) decodeValue(f field, t reflect.Type, ff reflect.Value) (n int, v interface{}, err error) {
+	if f.skip {
+		if err = d.expectTag(f.tag); err != nil {
 			return
 		}
+
+		if _, err = d.readType(); err != nil {
+			return
+		}
+
+		var l uint32
+		if l, err = d.readLength(); err != nil {
+			return
+		}
+
+		n = 8
+
+		_, err = io.CopyN(ioutil.Discard, d.r, int64(l))
+		n += int(l)
+
+		return
 	}
 
-	switch b[7] {
-	case 1:
-		v = true
-	case 0:
-		v = false
+	switch f.typ {
+	case INTEGER:
+		v, err = d.readInteger(f.tag)
+		n = 16
+	case LONG_INTEGER:
+		v, err = d.readLongInteger(f.tag)
+		n = 16
+	case ENUMERATION:
+		v, err = d.readEnum(f.tag)
+		n = 16
+	case BOOLEAN:
+		v, err = d.readBool(f.tag)
+		n = 16
+	case BYTE_STRING:
+		n, v, err = d.readBytes(f.tag)
+	case TEXT_STRING:
+		n, v, err = d.readString(f.tag)
+	case STRUCTURE:
+		var (
+			sD *structDesc
+			vv reflect.Value
+		)
+
+		if f.dynamic {
+			dD, ok := ff.Addr().Interface().(DynamicDispatch)
+			if !ok {
+				err = errors.New("field is dynamic, but DynamicDispatch is not implemented")
+				return
+			}
+
+			var val interface{}
+
+			val, err = dD.BuildFieldValue(f.name)
+			if err != nil {
+				return
+			}
+
+			vv = reflect.ValueOf(val)
+
+			switch vv.Type() {
+			case typeOfEnum:
+				f.typ = ENUMERATION
+				return d.decodeValue(f, t, ff)
+			case typeOfInt32:
+				f.typ = INTEGER
+				return d.decodeValue(f, t, ff)
+			}
+
+			sD, err = getStructDesc(vv.Type().Elem())
+			if err != nil {
+				return
+			}
+		} else {
+
+			sD, err = getStructDesc(t)
+			if err != nil {
+				return
+			}
+
+			vv = reflect.New(t)
+		}
+
+		sD.tag = f.tag
+		n, err = d.decode(vv, sD)
+
+		v = vv.Elem().Interface()
 	default:
-		err = errors.Errorf("unexpected boolean value: %v", b)
+		panic("unsupported type")
 	}
 
 	return
 }
 
-func (d *Decoder) readByteSlice(expectedTag Tag, expectedType Type) (n int, v []byte, err error) {
-	if err = d.expectTag(expectedTag); err != nil {
+func (d *Decoder) decode(rv reflect.Value, structD *structDesc) (n int, err error) {
+	if rv.Kind() == reflect.Ptr {
+		rv = rv.Elem()
+	}
+
+	if err = d.expectTag(structD.tag); err != nil {
 		return
 	}
 
-	if err = d.expectType(expectedType); err != nil {
+	if err = d.expectType(STRUCTURE); err != nil {
 		return
 	}
 
-	var l uint32
-	if l, err = d.readLength(); err != nil {
+	n += 4
+
+	var expectedLen, actualLen uint32
+	if expectedLen, err = d.readLength(); err != nil {
 		return
 	}
 
-	v = make([]byte, l)
-	_, err = io.ReadFull(d.r, v)
-	if err != nil {
-		return
-	}
+	n += 4
 
-	n = int(l) + 8
+	for _, f := range structD.fields {
+		var tag Tag
+		tag, err = d.peekTag()
 
-	// padding
-	var b [8]byte
-	if l%8 != 0 {
-		_, err = io.ReadFull(d.r, b[:8-l%8])
+		if err == io.EOF && !f.required {
+			err = nil
+			continue
+		}
+
 		if err != nil {
+			err = errors.Wrapf(err, "error reading field %v", f.name)
 			return
 		}
-		n += int(8 - l%8)
+
+		if !f.required && tag != f.tag {
+			continue
+		}
+
+		var (
+			nn int
+			v  interface{}
+		)
+
+		ff := rv.FieldByIndex(f.idx)
+
+		if f.sliceof {
+			ff.Set(reflect.MakeSlice(ff.Type(), 0, 0))
+
+			for {
+				nn, v, err = d.decodeValue(f, ff.Type().Elem(), rv)
+				if err != nil {
+					err = errors.Wrapf(err, "error reading field %v", f.name)
+					return
+				}
+
+				n += nn
+				actualLen += uint32(nn)
+
+				if !f.skip {
+					ff.Set(reflect.Append(ff, reflect.ValueOf(v)))
+				}
+
+				if actualLen >= expectedLen {
+					break
+				}
+
+				tag, err = d.peekTag()
+				if err != nil {
+					return
+				}
+
+				if tag != f.tag {
+					break
+				}
+			}
+		} else {
+			nn, v, err = d.decodeValue(f, ff.Type(), rv)
+			if err != nil {
+				err = errors.Wrapf(err, "error reading field %v", f.name)
+				return
+			}
+
+			n += nn
+			actualLen += uint32(nn)
+
+			if !f.skip {
+				ff.Set(reflect.ValueOf(v))
+			}
+		}
 	}
 
-	return
-}
+	if actualLen != expectedLen {
+		err = errors.Errorf("error reading structure expected %d != actual %d", expectedLen, actualLen)
+	}
 
-func (d *Decoder) readBytes(expectedTag Tag) (n int, v []byte, err error) {
-	n, v, err = d.readByteSlice(expectedTag, BYTE_STRING)
-	return
-}
-
-func (d *Decoder) readString(expectedTag Tag) (n int, v string, err error) {
-	var b []byte
-	n, b, err = d.readByteSlice(expectedTag, TEXT_STRING)
-	v = string(b)
 	return
 }

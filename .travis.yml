@@ -1,6 +1,10 @@
 dist: xenial
+sudo: false
 language: go
 go:
   - 1.12.x
 
-script: go test -v ./...
+script: go test -coverprofile=coverage.txt -covermode=atomic -v ./...
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
