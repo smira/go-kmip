@@ -101,6 +101,91 @@ func (s *EncoderSuite) TestWriteInterval() {
 	s.Assert().EqualValues(s.parseSpecValue("42 00 20 | 0A | 00 00 00 04 | 00 0D 2F 00 00 00 00 00"), buf.Bytes())
 }
 
+func (s *EncoderSuite) TestEncodeStruct() {
+	var buf bytes.Buffer
+
+	type tt struct {
+		Tag   `kmip:"COMPROMISE_DATE"`
+		Other string
+		A     Enum   `kmip:"APPLICATION_SPECIFIC_INFORMATION,required"`
+		B     int32  `kmip:"ARCHIVE_DATE,required"`
+		C     string `kmip:"COMPROMISE_DATE"`
+		D     []byte `kmip:"ACTIVATION_DATE"`
+	}
+
+	var v = tt{A: 254, B: 255}
+
+	err := NewEncoder(&buf).Encode(&v)
+	s.Assert().NoError(err)
+
+	s.Assert().EqualValues(s.parseSpecValue("42 00 20 | 01 | 00 00 00 20 | 42 00 04 | 05 | 00 00 00 04 | 00 00 00 FE 00 00 00 00 |"+
+		" 42 00 05 | 02 | 00 00 00 04 | 00 00 00 FF 00 00 00 00"), buf.Bytes())
+}
+
+func (s *EncoderSuite) TestEncodeMessageCreate() {
+	var buf bytes.Buffer
+
+	createRequest := Request{
+		Header: RequestHeader{
+			Version:    ProtocolVersion{Major: 1, Minor: 1},
+			BatchCount: 1,
+		},
+		BatchItems: []BatchItem{
+			{
+				Operation: OPERATION_CREATE,
+				RequestPayload: OperationCreate{
+					ObjectType: OBJECT_TYPE_SYMMETRIC_KEY,
+					TemplateAttribute: TemplateAttribute{
+						Attributes: []Attribute{
+							{
+								Name:  "Cryptographic Algorithm",
+								Value: CRYPTO_AES,
+							},
+							{
+								Name:  "Cryptographic Length",
+								Value: int32(128),
+							},
+							{
+								Name:  "Cryptographic Usage Mask",
+								Value: int32(12),
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	err := NewEncoder(&buf).Encode(&createRequest)
+	s.Assert().NoError(err)
+
+	s.Assert().EqualValues(messageCreate, buf.Bytes())
+}
+
+func (s *EncoderSuite) TestEncodeMessageGet() {
+	var buf bytes.Buffer
+
+	getRequest := Request{
+		Header: RequestHeader{
+			Version:    ProtocolVersion{Major: 1, Minor: 1},
+			BatchCount: 1,
+		},
+		BatchItems: []BatchItem{
+			{
+				Operation: OPERATION_GET,
+				RequestPayload: OperationGet{
+					UniqueIdentifier: "49a1ca88-6bea-4fb2-b450-7e58802c3038",
+				},
+			},
+		},
+	}
+
+	err := NewEncoder(&buf).Encode(&getRequest)
+	s.Assert().NoError(err)
+
+	s.Assert().EqualValues(messageGet, buf.Bytes())
+}
+
 func TestEncoderSuite(t *testing.T) {
 	suite.Run(t, new(EncoderSuite))
 }

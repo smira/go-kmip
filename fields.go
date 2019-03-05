@@ -38,6 +38,34 @@ func parseTag(tag string) (name, opt string) {
 	return
 }
 
+func guessType(ft reflect.Type, f *field) error {
+	switch ft {
+	case typeOfInt32:
+		f.typ = INTEGER
+	case typeOfInt64:
+		f.typ = LONG_INTEGER
+	case typeOfEnum:
+		f.typ = ENUMERATION
+	case typeOfBool:
+		f.typ = BOOLEAN
+	case typeOfBytes:
+		f.typ = BYTE_STRING
+	case typeOfString:
+		f.typ = TEXT_STRING
+	default:
+		if ft.Kind() == reflect.Struct {
+			f.typ = STRUCTURE
+		} else if ft.Kind() == reflect.Interface {
+			f.typ = STRUCTURE
+			f.dynamic = true
+		} else {
+			return errors.Errorf("unsupported type %s", ft.String())
+		}
+	}
+
+	return nil
+}
+
 func getStructDesc(tt reflect.Type) (*structDesc, error) {
 	res := &structDesc{}
 
@@ -77,28 +105,8 @@ func getStructDesc(tt reflect.Type) (*structDesc, error) {
 			ft = ft.Elem()
 		}
 
-		switch ft {
-		case typeOfInt32:
-			f.typ = INTEGER
-		case typeOfInt64:
-			f.typ = LONG_INTEGER
-		case typeOfEnum:
-			f.typ = ENUMERATION
-		case typeOfBool:
-			f.typ = BOOLEAN
-		case typeOfBytes:
-			f.typ = BYTE_STRING
-		case typeOfString:
-			f.typ = TEXT_STRING
-		default:
-			if ft.Kind() == reflect.Struct {
-				f.typ = STRUCTURE
-			} else if ft.Kind() == reflect.Interface {
-				f.typ = STRUCTURE
-				f.dynamic = true
-			} else {
-				return nil, errors.Errorf("unsupported type %s for field %v", ft.String(), ff.Name)
-			}
+		if err := guessType(ft, &f); err != nil {
+			return nil, errors.WithMessagef(err, "error processing field %v", ff.Name)
 		}
 
 		res.fields = append(res.fields, f)
