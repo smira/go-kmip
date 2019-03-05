@@ -4,12 +4,11 @@ language: go
 go:
   - 1.12.x
 
+env:
+	- GO111MODULE=on
+
 before_install:
   - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.15.0
-
-script: 
-  - go test -coverprofile=coverage.txt -covermode=atomic -v ./...
-  - golangci-lint run 
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
