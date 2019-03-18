@@ -28,3 +28,19 @@ func (a *Attribute) BuildFieldValue(name string) (v interface{}, err error) {
 
 	return
 }
+
+// TemplateAttribute is a Template-Attribute Object Structure
+type TemplateAttribute struct {
+	Tag `kmip:"TEMPLATE_ATTRIBUTE"`
+
+	Name       Name        `kmip:"NAME"`
+	Attributes []Attribute `kmip:"ATTRIBUTE"`
+}
+
+// Name is a Name Attribute Structure
+type Name struct {
+	Tag `kmip:"NAME"`
+
+	Value string `kmip:"NAME_VALUE,required"`
+	Type  Enum   `kmip:"NAME_TYPE,required"`
+}

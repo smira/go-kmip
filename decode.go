@@ -290,9 +290,12 @@ func (d *Decoder) decode(rv reflect.Value, structD *structDesc) (n int, err erro
 
 	n += 4
 
+	// initialize wrapped decoder with limited reader
+	dd := NewDecoder(io.LimitReader(d.r, int64(expectedLen)))
+
 	for _, f := range structD.fields {
 		var tag Tag
-		tag, err = d.peekTag()
+		tag, err = dd.peekTag()
 
 		if err == io.EOF && !f.required {
 			err = nil
@@ -319,7 +322,7 @@ func (d *Decoder) decode(rv reflect.Value, structD *structDesc) (n int, err erro
 			ff.Set(reflect.MakeSlice(ff.Type(), 0, 0))
 
 			for {
-				nn, v, err = d.decodeValue(f, ff.Type().Elem(), rv)
+				nn, v, err = dd.decodeValue(f, ff.Type().Elem(), rv)
 				if err != nil {
 					err = errors.Wrapf(err, "error reading field %v", f.name)
 					return
@@ -336,7 +339,7 @@ func (d *Decoder) decode(rv reflect.Value, structD *structDesc) (n int, err erro
 					break
 				}
 
-				tag, err = d.peekTag()
+				tag, err = dd.peekTag()
 				if err != nil {
 					return
 				}
@@ -346,7 +349,7 @@ func (d *Decoder) decode(rv reflect.Value, structD *structDesc) (n int, err erro
 				}
 			}
 		} else {
-			nn, v, err = d.decodeValue(f, ff.Type(), rv)
+			nn, v, err = dd.decodeValue(f, ff.Type(), rv)
 			if err != nil {
 				err = errors.Wrapf(err, "error reading field %v", f.name)
 				return

@@ -182,10 +182,10 @@ func (s *DecoderSuite) TestDecodeMessageCreate() {
 				Version:    ProtocolVersion{Major: 1, Minor: 1},
 				BatchCount: 1,
 			},
-			BatchItems: []BatchItem{
+			BatchItems: []RequestBatchItem{
 				{
 					Operation: OPERATION_CREATE,
-					RequestPayload: OperationCreate{
+					RequestPayload: CreateRequest{
 						ObjectType: OBJECT_TYPE_SYMMETRIC_KEY,
 						TemplateAttribute: TemplateAttribute{
 							Attributes: []Attribute{
@@ -219,10 +219,10 @@ func (s *DecoderSuite) TestDecodeMessageGet() {
 			Version:    ProtocolVersion{Major: 1, Minor: 1},
 			BatchCount: 1,
 		},
-		BatchItems: []BatchItem{
+		BatchItems: []RequestBatchItem{
 			{
 				Operation: OPERATION_GET,
-				RequestPayload: OperationGet{
+				RequestPayload: GetRequest{
 					UniqueIdentifier: "49a1ca88-6bea-4fb2-b450-7e58802c3038",
 				},
 			},

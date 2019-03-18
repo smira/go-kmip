@@ -14,8 +14,8 @@ import (
 type Request struct {
 	Tag `kmip:"REQUEST_MESSAGE"`
 
-	Header     RequestHeader `kmip:"REQUEST_HEADER,required"`
-	BatchItems []BatchItem   `kmip:"REQUEST_BATCH_ITEM,required"`
+	Header     RequestHeader      `kmip:"REQUEST_HEADER,required"`
+	BatchItems []RequestBatchItem `kmip:"REQUEST_BATCH_ITEM,required"`
 }
 
 // RequestHeader is a Request Header Structure
@@ -36,16 +36,8 @@ type RequestHeader struct {
 	BatchCount                   int32           `kmip:"BATCH_COUNT,required"`
 }
 
-// ProtocolVersion is a Protocol Version structure
-type ProtocolVersion struct {
-	Tag `kmip:"PROTOCOL_VERSION"`
-
-	Major int32 `kmip:"PROTOCOL_VERSION_MAJOR"`
-	Minor int32 `kmip:"PROTOCOL_VERSION_MINOR"`
-}
-
-// BatchItem is a Batch Item Structure
-type BatchItem struct {
+// RequestBatchItem is a Request Batch Item Structure
+type RequestBatchItem struct {
 	Tag `kmip:"REQUEST_BATCH_ITEM"`
 
 	Operation        Enum             `kmip:"OPERATION,required"`
@@ -55,17 +47,27 @@ type BatchItem struct {
 }
 
 // BuildFieldValue builds value for RequestPayload based on Operation
-func (bi *BatchItem) BuildFieldValue(name string) (v interface{}, err error) {
+func (bi *RequestBatchItem) BuildFieldValue(name string) (v interface{}, err error) {
 	switch bi.Operation {
 	case OPERATION_CREATE:
-		v = &OperationCreate{}
+		v = &CreateRequest{}
 	case OPERATION_GET:
-		v = &OperationGet{}
+		v = &GetRequest{}
+	case OPERATION_DISCOVER_VERSIONS:
+		v = &DiscoverVersionsRequest{}
 	default:
 		err = errors.Errorf("unsupported operation: %v", bi.Operation)
 	}
 
 	return
+}
+
+// ProtocolVersion is a Protocol Version structure
+type ProtocolVersion struct {
+	Tag `kmip:"PROTOCOL_VERSION"`
+
+	Major int32 `kmip:"PROTOCOL_VERSION_MAJOR"`
+	Minor int32 `kmip:"PROTOCOL_VERSION_MINOR"`
 }
 
 // MessageExtension is a Message Extension structure in a Batch Item
@@ -75,20 +77,4 @@ type MessageExtension struct {
 	VendorIdentification string      `kmip:"VENDOR_IDENTIFICATION,required"`
 	CriticalityIndicator bool        `kmip:"CRITICALITY_INDICATOR,required"`
 	VendorExtension      interface{} `kmip:"-,skip"`
-}
-
-// TemplateAttribute is a Template-Attribute Object Structure
-type TemplateAttribute struct {
-	Tag `kmip:"TEMPLATE_ATTRIBUTE"`
-
-	Name       Name        `kmip:"NAME"`
-	Attributes []Attribute `kmip:"ATTRIBUTE"`
-}
-
-// Name is a Name Attribute Structure
-type Name struct {
-	Tag `kmip:"NAME"`
-
-	Value string `kmip:"NAME_VALUE,required"`
-	Type  Enum   `kmip:"NAME_TYPE,required"`
 }

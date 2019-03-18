@@ -2,7 +2,7 @@ all: test lint
 
 .PHONY: test
 test:
-	go test -v -coverprofile=coverage.txt -covermode=atomic .
+	go test -v -race -coverprofile=coverage.txt -covermode=atomic .
 
 .PHONY: lint
 lint:
