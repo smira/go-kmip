@@ -245,10 +245,14 @@ func (s *Server) serve(conn net.Conn, session string) {
 		}
 	}
 
-	if s.SessionAuthHandler != nil {
+	s.mu.Lock()
+	sessionAuthHandler := s.SessionAuthHandler
+	s.mu.Unlock()
+
+	if sessionAuthHandler != nil {
 		var err error
 
-		sessionCtx.SessionAuth, err = s.SessionAuthHandler(conn)
+		sessionCtx.SessionAuth, err = sessionAuthHandler(conn)
 		if err != nil {
 			s.Log.Printf("[ERROR] [%s] Error in session auth handler: %s", session, err)
 			return
@@ -376,7 +380,7 @@ func (s *Server) handleWrapped(request *RequestContext, item *RequestBatchItem) 
 	handler := s.handlers[item.Operation]
 
 	if handler == nil {
-		err = wrapError(errors.New("operation not supported"), RESULT_REASON_FEATURE_NOT_SUPPORTED)
+		err = wrapError(errors.New("operation not supported"), RESULT_REASON_OPERATION_NOT_SUPPORTED)
 		return
 	}
 

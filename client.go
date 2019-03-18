@@ -80,7 +80,7 @@ func (c *Client) Close() error {
 // DiscoverVersions with the server
 func (c *Client) DiscoverVersions(versions []ProtocolVersion) (serverVersions []ProtocolVersion, err error) {
 	var resp interface{}
-	resp, err = c.send(OPERATION_DISCOVER_VERSIONS,
+	resp, err = c.Send(OPERATION_DISCOVER_VERSIONS,
 		DiscoverVersionsRequest{
 			ProtocolVersions: versions,
 		})
@@ -93,7 +93,12 @@ func (c *Client) DiscoverVersions(versions []ProtocolVersion) (serverVersions []
 	return
 }
 
-func (c *Client) send(operation Enum, req interface{}) (resp interface{}, err error) {
+// Send request to server and deliver response/error back
+//
+// Request payload should be passed as req, and response payload will be
+// returned back as resp. Operation will be sent as a batch with single
+// item.
+func (c *Client) Send(operation Enum, req interface{}) (resp interface{}, err error) {
 	if c.conn == nil {
 		err = errors.New("not connected")
 		return
