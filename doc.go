@@ -1,10 +1,5 @@
 // Package kmip implements KMIP protocol
-package kmip
-
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
+//
 // KMIP protocol is used to access KMS solutions: generating keys, certificates,
 // accessing stored objects, etc.
 //
@@ -22,3 +17,8 @@ package kmip
 // Not all the KMIP operations have corresponding Go structs, missing ones should
 // be added to operations.go, and dynamic type dispatch to
 // RequestBatchItem/ResponseBatchItem.BuildFieldValue methods.
+package kmip
+
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
