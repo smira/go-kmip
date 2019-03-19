@@ -1,14 +1,14 @@
 package kmip
 
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 import (
 	"time"
 
 	"github.com/pkg/errors"
 )
-
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 // Response is a Response Message Structure
 type Response struct {
@@ -46,6 +46,16 @@ type ResponseBatchItem struct {
 // BuildFieldValue builds value for ResponsePayload based on Operation
 func (bi *ResponseBatchItem) BuildFieldValue(name string) (v interface{}, err error) {
 	switch bi.Operation {
+	case OPERATION_CREATE:
+		v = &CreateResponse{}
+	case OPERATION_GET:
+		v = &GetResponse{}
+	case OPERATION_GET_ATTRIBUTES:
+		v = &GetAttributesResponse{}
+	case OPERATION_GET_ATTRIBUTE_LIST:
+		v = &GetAttributeListResponse{}
+	case OPERATION_DESTROY:
+		v = &DestroyResponse{}
 	case OPERATION_DISCOVER_VERSIONS:
 		v = &DiscoverVersionsResponse{}
 	default:

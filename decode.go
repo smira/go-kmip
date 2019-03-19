@@ -15,6 +15,9 @@ import (
 )
 
 // Decoder implements KMIP protocol decoding
+//
+// Decoding works exactly the same way as encoding
+// (see Encoder documentation), but the other way around.
 type Decoder struct {
 	r io.Reader
 	s io.ByteScanner
@@ -235,11 +238,23 @@ func (d *Decoder) decodeValue(f field, t reflect.Type, ff reflect.Value) (n int,
 			vv = reflect.ValueOf(val)
 
 			switch vv.Type() {
+			case typeOfInt32:
+				f.typ = INTEGER
+				return d.decodeValue(f, t, ff)
+			case typeOfInt64:
+				f.typ = LONG_INTEGER
+				return d.decodeValue(f, t, ff)
 			case typeOfEnum:
 				f.typ = ENUMERATION
 				return d.decodeValue(f, t, ff)
-			case typeOfInt32:
-				f.typ = INTEGER
+			case typeOfBool:
+				f.typ = BOOLEAN
+				return d.decodeValue(f, t, ff)
+			case typeOfBytes:
+				f.typ = BYTE_STRING
+				return d.decodeValue(f, t, ff)
+			case typeOfString:
+				f.typ = TEXT_STRING
 				return d.decodeValue(f, t, ff)
 			}
 

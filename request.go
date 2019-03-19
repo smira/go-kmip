@@ -53,6 +53,12 @@ func (bi *RequestBatchItem) BuildFieldValue(name string) (v interface{}, err err
 		v = &CreateRequest{}
 	case OPERATION_GET:
 		v = &GetRequest{}
+	case OPERATION_GET_ATTRIBUTES:
+		v = &GetAttributesRequest{}
+	case OPERATION_GET_ATTRIBUTE_LIST:
+		v = &GetAttributeListRequest{}
+	case OPERATION_DESTROY:
+		v = &DestroyRequest{}
 	case OPERATION_DISCOVER_VERSIONS:
 		v = &DiscoverVersionsRequest{}
 	default:

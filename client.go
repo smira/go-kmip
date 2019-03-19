@@ -98,6 +98,9 @@ func (c *Client) DiscoverVersions(versions []ProtocolVersion) (serverVersions []
 // Request payload should be passed as req, and response payload will be
 // returned back as resp. Operation will be sent as a batch with single
 // item.
+//
+// Send is a generic method, it's better to implement specific methods for
+// each operation (use DiscoverVersions as example).
 func (c *Client) Send(operation Enum, req interface{}) (resp interface{}, err error) {
 	if c.conn == nil {
 		err = errors.New("not connected")
