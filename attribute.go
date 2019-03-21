@@ -4,7 +4,11 @@ package kmip
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import "github.com/pkg/errors"
+import (
+	"time"
+
+	"github.com/pkg/errors"
+)
 
 // Attribute is a Attribute Object Structure
 type Attribute struct {
@@ -22,8 +26,28 @@ func (a *Attribute) BuildFieldValue(name string) (v interface{}, err error) {
 		v = Enum(0)
 	case "Cryptographic Length", "Cryptographic Usage Mask":
 		v = int32(0)
+	case "Unique Identifier", "Name":
+		v = ""
+	case "Object Type":
+		v = Enum(0)
+	case "Initial Date", "Last Change Date":
+		v = time.Time{}
 	default:
 		err = errors.Errorf("unsupported attribute: %v", a.Name)
+	}
+
+	return
+}
+
+// Attributes is a sequence of Attribute objects which allows building and search
+type Attributes []Attribute
+
+func (attrs Attributes) Get(name string) (val interface{}) {
+	for i := range attrs {
+		if attrs[i].Name == name {
+			val = attrs[i].Value
+			break
+		}
 	}
 
 	return
@@ -33,8 +57,8 @@ func (a *Attribute) BuildFieldValue(name string) (v interface{}, err error) {
 type TemplateAttribute struct {
 	Tag `kmip:"TEMPLATE_ATTRIBUTE"`
 
-	Name       Name        `kmip:"NAME"`
-	Attributes []Attribute `kmip:"ATTRIBUTE"`
+	Name       Name       `kmip:"NAME"`
+	Attributes Attributes `kmip:"ATTRIBUTE"`
 }
 
 // Name is a Name Attribute Structure

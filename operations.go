@@ -6,15 +6,15 @@ package kmip
 
 // CreateRequest is a Create Request Payload
 type CreateRequest struct {
-	ObjectType        Enum `kmip:"OBJECT_TYPE,required"`
-	TemplateAttribute `kmip:"TEMPLATE_ATTRIBUTE,required"`
+	ObjectType        Enum              `kmip:"OBJECT_TYPE,required"`
+	TemplateAttribute TemplateAttribute `kmip:"TEMPLATE_ATTRIBUTE,required"`
 }
 
 // CreateResponse is a Create Response Payload
 type CreateResponse struct {
-	ObjectType        Enum   `kmip:"OBJECT_TYPE,required"`
-	UniqueIdentifier  string `kmip:"UNIQUE_IDENTIFIER,required"`
-	TemplateAttribute `kmip:"TEMPLATE_ATTRIBUTE"`
+	ObjectType        Enum              `kmip:"OBJECT_TYPE,required"`
+	UniqueIdentifier  string            `kmip:"UNIQUE_IDENTIFIER,required"`
+	TemplateAttribute TemplateAttribute `kmip:"TEMPLATE_ATTRIBUTE"`
 }
 
 // GetRequest is a Get Request Payload
@@ -42,8 +42,8 @@ type GetAttributesRequest struct {
 
 // GetAttributesResponse is a Get Attributes Response Payload
 type GetAttributesResponse struct {
-	UniqueIdentifier string      `kmip:"UNIQUE_IDENTIFIER,required"`
-	Attributes       []Attribute `kmip:"ATTRIBUTE"`
+	UniqueIdentifier string     `kmip:"UNIQUE_IDENTIFIER,required"`
+	Attributes       Attributes `kmip:"ATTRIBUTE"`
 }
 
 // GetAttributeListRequest is a Get Attribute List Request Payload
