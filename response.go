@@ -23,7 +23,7 @@ type ResponseHeader struct {
 	Tag `kmip:"RESPONSE_HEADER"`
 
 	Version                ProtocolVersion `kmip:"PROTOCOL_VERSION,required"`
-	TimeStamp              time.Time       `kmip:"TIME_STAMP"`
+	TimeStamp              time.Time       `kmip:"TIME_STAMP,required"`
 	Nonce                  Nonce           `kmip:"NONCE"`
 	AttestationType        []Enum          `kmip:"ATTESTATION_TYPE"`
 	ClientCorrelationValue string          `kmip:"CLIENT_CORRELATION_VALUE"`

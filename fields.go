@@ -52,6 +52,10 @@ func guessType(ft reflect.Type, f *field) error {
 		f.typ = BYTE_STRING
 	case typeOfString:
 		f.typ = TEXT_STRING
+	case typeOfTime:
+		f.typ = DATE_TIME
+	case typeOfDuration:
+		f.typ = INTERVAL
 	default:
 		if ft.Kind() == reflect.Struct {
 			f.typ = STRUCTURE

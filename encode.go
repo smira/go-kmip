@@ -144,6 +144,10 @@ func isZeroValue(rv reflect.Value) (bool, error) {
 	case reflect.Interface, reflect.Ptr:
 		return rv.IsNil(), nil
 	case reflect.Struct:
+		if rv.Type() == typeOfTime {
+			return rv.Interface().(time.Time).IsZero(), nil
+		}
+
 		sD, err := getStructDesc(rv.Type())
 		if err != nil {
 			return false, err

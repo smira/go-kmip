@@ -122,6 +122,25 @@ func (s *EncoderSuite) TestEncodeStruct() {
 		" 42 00 05 | 02 | 00 00 00 04 | 00 00 00 FF 00 00 00 00"), buf.Bytes())
 }
 
+func (s *EncoderSuite) TestEncodeStructWithTimeInterval() {
+	var buf bytes.Buffer
+
+	type tt struct {
+		Tag `kmip:"COMPROMISE_DATE"`
+		A   time.Time     `kmip:"ARCHIVE_DATE"`
+		B   time.Duration `kmip:"ACTIVATION_DATE"`
+	}
+
+	t, _ := time.Parse(time.RFC3339, "2008-03-14T11:56:40Z")
+	var v = tt{A: t, B: 10 * 24 * time.Hour}
+
+	err := NewEncoder(&buf).Encode(&v)
+	s.Assert().NoError(err)
+
+	s.Assert().EqualValues(s.parseSpecValue("42 00 20 | 01 | 00 00 00 20 | 42 00 05 | 09 | 00 00 00 08 | 00 00 00 00 47 DA 67 F8 |"+
+		" 42 00 01 | 0A | 00 00 00 04 |  00 0D 2F 00 00 00 00 00"), buf.Bytes())
+}
+
 func (s *EncoderSuite) TestEncodeMessageCreate() {
 	var buf bytes.Buffer
 
