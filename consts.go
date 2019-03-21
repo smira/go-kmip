@@ -465,6 +465,17 @@ const (
 	OBJECT_TYPE_CERTIFICATE_REQUEST Enum = 0x0000000A
 )
 
+// KMIP States
+const (
+	// KMIP 1.0
+	STATE_PRE_ACTIVE            Enum = 0x00000001
+	STATE_ACTIVE                Enum = 0x00000002
+	STATE_DEACTIVATED           Enum = 0x00000003
+	STATE_COMPROMISED           Enum = 0x00000004
+	STATE_DESTROYED             Enum = 0x00000005
+	STATE_DESTROYED_COMPROMISED Enum = 0x00000006
+)
+
 // KMIP Crypto Algorithms
 const (
 	// KMIP 1.0
