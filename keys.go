@@ -80,8 +80,17 @@ type KeyBlock struct {
 
 	FormatType             Enum            `kmip:"KEY_FORMAT_TYPE,required"`
 	CompressionType        Enum            `kmip:"KEY_COMPRESSION_TYPE"`
-	Value                  interface{}     `kmip:"KEY_VALUE,required"`
+	Value                  KeyValue        `kmip:"KEY_VALUE,required"`
 	CryptographicAlgorithm Enum            `kmip:"CRYPTOGRAPHIC_ALGORITHM"`
 	CryptographicLength    int32           `kmip:"CRYPTOGRAPHIC_LENGTH"`
 	WrappingData           KeyWrappingData `kmip:"KEY_WRAPPING_SPECIFICATION"`
+}
+
+// KeyValue is a Key Value Object Structure
+type KeyValue struct {
+	Tag `kmip:"KEY_VALUE"`
+
+	// TODO: might be structure if wrapping is used
+	KeyMaterial []byte     `kmip:"KEY_MATERIAL"`
+	Attributes  Attributes `kmip:"ATTRIBUTE"`
 }
