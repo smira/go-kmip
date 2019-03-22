@@ -89,10 +89,22 @@ func (e *Encoder) encodeValue(f field, rt reflect.Type, rv reflect.Value) (err e
 		rt = rv.Type()
 
 		switch rt {
-		case typeOfEnum:
-			f.typ = ENUMERATION
 		case typeOfInt32:
 			f.typ = INTEGER
+		case typeOfInt64:
+			f.typ = LONG_INTEGER
+		case typeOfEnum:
+			f.typ = ENUMERATION
+		case typeOfBool:
+			f.typ = BOOLEAN
+		case typeOfBytes:
+			f.typ = BYTE_STRING
+		case typeOfString:
+			f.typ = TEXT_STRING
+		case typeOfTime:
+			f.typ = DATE_TIME
+		case typeOfDuration:
+			f.typ = INTERVAL
 		}
 	}
 
