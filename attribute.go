@@ -26,12 +26,14 @@ func (a *Attribute) BuildFieldValue(name string) (v interface{}, err error) {
 		v = Enum(0)
 	case "Cryptographic Length", "Cryptographic Usage Mask":
 		v = int32(0)
-	case "Unique Identifier", "Name":
+	case "Unique Identifier":
 		v = ""
 	case "Object Type":
 		v = Enum(0)
 	case "Initial Date", "Last Change Date":
 		v = time.Time{}
+	case "Name":
+		v = Name{}
 	default:
 		err = errors.Errorf("unsupported attribute: %v", a.Name)
 	}

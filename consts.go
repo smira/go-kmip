@@ -530,6 +530,12 @@ const (
 	KEY_COMPRESSION_EC_PUBLIC_KEY_TYPE_X9_62_HYBRID           Enum = 0x00000004
 )
 
+// KMIP Name Types
+const (
+	NAME_TYPE_UNINTERPRETED_TEXT_STRING Enum = 0x00000001
+	NAME_TYPE_URI                       Enum = 0x00000002
+)
+
 // KMIP Crypto Algorithms
 const (
 	// KMIP 1.0
