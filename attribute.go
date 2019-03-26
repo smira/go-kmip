@@ -33,7 +33,7 @@ func (a *Attribute) BuildFieldValue(name string) (v interface{}, err error) {
 	case "Initial Date", "Last Change Date":
 		v = time.Time{}
 	case "Name":
-		v = Name{}
+		v = &Name{}
 	default:
 		err = errors.Errorf("unsupported attribute: %v", a.Name)
 	}
