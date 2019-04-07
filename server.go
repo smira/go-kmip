@@ -336,7 +336,7 @@ func (s *Server) handleBatch(session *SessionContext, req *Request) (resp *Respo
 
 	for i := range req.BatchItems {
 		resp.BatchItems[i].Operation = req.BatchItems[i].Operation
-		resp.BatchItems[i].UniqueID = req.BatchItems[i].UniqueID
+		resp.BatchItems[i].UniqueID = append([]byte(nil), req.BatchItems[i].UniqueID...)
 
 		var (
 			batchResp interface{}

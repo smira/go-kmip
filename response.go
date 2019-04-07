@@ -34,7 +34,7 @@ type ResponseHeader struct {
 // ResponseBatchItem is a Response Batch Item Structure
 type ResponseBatchItem struct {
 	Operation                   Enum             `kmip:"OPERATION,required"`
-	UniqueID                    string           `kmip:"UNIQUE_BATCH_ITEM_ID"`
+	UniqueID                    []byte           `kmip:"UNIQUE_BATCH_ITEM_ID"`
 	ResultStatus                Enum             `kmip:"RESULT_STATUS,required"`
 	ResultReason                Enum             `kmip:"RESULT_REASON"`
 	ResultMessage               string           `kmip:"RESULT_MESSAGE"`

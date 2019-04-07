@@ -41,7 +41,7 @@ type RequestBatchItem struct {
 	Tag `kmip:"REQUEST_BATCH_ITEM"`
 
 	Operation        Enum             `kmip:"OPERATION,required"`
-	UniqueID         string           `kmip:"UNIQUE_BATCH_ITEM_ID"`
+	UniqueID         []byte           `kmip:"UNIQUE_BATCH_ITEM_ID"`
 	RequestPayload   interface{}      `kmip:"REQUEST_PAYLOAD,required"`
 	MessageExtension MessageExtension `kmip:"MESSAGE_EXTENSION"`
 }
