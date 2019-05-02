@@ -74,6 +74,20 @@ type SymmetricKey struct {
 	KeyBlock KeyBlock `kmip:"KEY_BLOCK,required"`
 }
 
+// PublicKey is a Managed Cryptographic Object that is a public key
+type PublicKey struct {
+	Tag `kmip:"PUBLIC_KEY"`
+
+	KeyBlock KeyBlock `kmip:"KEY_BLOCK,required"`
+}
+
+// PrivateKey is a Managed Cryptographic Object that is a private key
+type PrivateKey struct {
+	Tag `kmip:"PRIVATE_KEY"`
+
+	KeyBlock KeyBlock `kmip:"KEY_BLOCK,required"`
+}
+
 // KeyBlock is a Key Block Object Structure
 type KeyBlock struct {
 	Tag `kmip:"KEY_BLOCK"`

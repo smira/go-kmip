@@ -84,3 +84,11 @@ type MessageExtension struct {
 	CriticalityIndicator bool        `kmip:"CRITICALITY_INDICATOR,required"`
 	VendorExtension      interface{} `kmip:"-,skip"`
 }
+
+// RevocationReason is a Revocation Reason structure
+type RevocationReason struct {
+	Tag `kmip:"REVOCATION_REASON"`
+
+	RevocationReasonCode Enum   `kmip:"REVOCATION_REASON_CODE"`
+	RevocationMessage    string `kmip:"REVOCATION_REASON"`
+}
