@@ -34,6 +34,8 @@ func (a *Attribute) BuildFieldValue(name string) (v interface{}, err error) {
 		v = time.Time{}
 	case "Name":
 		v = &Name{}
+	case "Digest":
+		v = &Digest{}
 	default:
 		err = errors.Errorf("unsupported attribute: %v", a.Name)
 	}
@@ -69,4 +71,13 @@ type Name struct {
 
 	Value string `kmip:"NAME_VALUE,required"`
 	Type  Enum   `kmip:"NAME_TYPE,required"`
+}
+
+// Digest is a Digest Attribute Structure
+type Digest struct {
+	Tag `kmip:"DIGEST"`
+
+	HashingAlgorithm Enum   `kmip:"HASHING_ALGORITHM,required"`
+	DigestValue      []byte `kmip:"DIGEST_VALUE"`
+	KeyFormatType    Enum   `kmip:"KEY_FORMAT_TYPE"`
 }

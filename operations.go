@@ -1,5 +1,9 @@
 package kmip
 
+import (
+	"time"
+)
+
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -17,6 +21,21 @@ type CreateResponse struct {
 	TemplateAttribute TemplateAttribute `kmip:"TEMPLATE_ATTRIBUTE"`
 }
 
+// CreateKeyPairRequest is a Create Key Pair Request Payload
+type CreateKeyPairRequest struct {
+	CommonTemplateAttribute     TemplateAttribute `kmip:"COMMON_TEMPLATE_ATTRIBUTE"`
+	PrivateKeyTemplateAttribute TemplateAttribute `kmip:"PRIVATE_KEY_TEMPLATE_ATTRIBUTE"`
+	PublicKeyTemplateAttribute  TemplateAttribute `kmip:"PUBLIC_KEY_TEMPLATE_ATTRIBUTE"`
+}
+
+// CreateKeyPairResponse is a Create Key Pair Response Payload
+type CreateKeyPairResponse struct {
+	PrivateKeyUniqueIdentifier  string            `kmip:"PRIVATE_KEY_UNIQUE_IDENTIFIER,required"`
+	PublicKeyUniqueIdentifier   string            `kmip:"PUBLIC_KEY_UNIQUE_IDENTIFIER,required"`
+	PrivateKeyTemplateAttribute TemplateAttribute `kmip:"PRIVATE_KEY_TEMPLATE_ATTRIBUTE"`
+	PublicKeyTemplateAttribute  TemplateAttribute `kmip:"PUBLIC_KEY_TEMPLATE_ATTRIBUTE"`
+}
+
 // GetRequest is a Get Request Payload
 type GetRequest struct {
 	UniqueIdentifier   string                   `kmip:"UNIQUE_IDENTIFIER"`
@@ -32,6 +51,8 @@ type GetResponse struct {
 	UniqueIdentifier string `kmip:"UNIQUE_IDENTIFIER,required"`
 	// Response might contain one of SymmetricKey, Certificate, ...
 	SymmetricKey SymmetricKey `kmip:"SYMMETRIC_KEY"`
+	PrivateKey   PrivateKey   `kmip:"PRIVATE_KEY"`
+	PublicKey    PublicKey    `kmip:"PUBLIC_KEY"`
 }
 
 // GetAttributesRequest is a Get Attributes Request Payload
@@ -57,6 +78,28 @@ type GetAttributeListResponse struct {
 	AttributeNames   []string `kmip:"ATTRIBUTE_NAME"`
 }
 
+// ActivateRequest is a Activate Request Payload
+type ActivateRequest struct {
+	UniqueIdentifier string `kmip:"UNIQUE_IDENTIFIER"`
+}
+
+// ActivateResponse is a Activate Response Payload
+type ActivateResponse struct {
+	UniqueIdentifier string `kmip:"UNIQUE_IDENTIFIER,required"`
+}
+
+// RevokeRequest is a Revoke Request Payload
+type RevokeRequest struct {
+	UniqueIdentifier string           `kmip:"UNIQUE_IDENTIFIER"`
+	RevocationReason RevocationReason `kmip:"REVOCATION_REASON,required"`
+	CompromiseDate   time.Time        `kmip:"COMPROMISE_DATE"`
+}
+
+// RevokeResponse is a Revoke Response Payload
+type RevokeResponse struct {
+	UniqueIdentifier string `kmip:"UNIQUE_IDENTIFIER,required"`
+}
+
 // DestroyRequest is a Destroy Request Payload
 type DestroyRequest struct {
 	UniqueIdentifier string `kmip:"UNIQUE_IDENTIFIER"`
@@ -75,4 +118,51 @@ type DiscoverVersionsRequest struct {
 // DiscoverVersionsResponse is a Discover Versions Response Payload
 type DiscoverVersionsResponse struct {
 	ProtocolVersions []ProtocolVersion `kmip:"PROTOCOL_VERSION"`
+}
+
+// QueryRequest is a Query Request Payload
+type QueryRequest struct {
+	QueryFunctions []Enum `kmip:"QUERY_FUNCTION,required"`
+}
+
+// QueryResponse is a Query Response Payload
+type QueryResponse struct {
+	Operations           []Enum `kmip:"OPERATION"`
+	ObjectTypes          []Enum `kmip:"OBJECT_TYPE"`
+	VendorIdentification string `kmip:"VENDOR_IDENTIFICATION"`
+}
+
+// DecryptRequest is a Decrypt Request Payload
+type DecryptRequest struct {
+	UniqueIdentifier string       `kmip:"UNIQUE_IDENTIFIER"`
+	CryptoParams     CryptoParams `kmip:"CRYPTOGRAPHIC_PARAMETERS"`
+	Data             []byte       `kmip:"DATA"`
+	IVCounterNone    []byte       `kmip:"IV_COUNTER_NONCE"`
+	CorrelationValue []byte       `kmip:"CORRELATION_VALUE"`
+	InitIndicator    bool         `kmip:"INIT_INDICATOR"`
+	FinalIndicator   bool         `kmip:"FINAL_INDICATOR"`
+}
+
+// DecryptResponse is a Decrypt Response Payload
+type DecryptResponse struct {
+	UniqueIdentifier string `kmip:"UNIQUE_IDENTIFIER,required"`
+	Data             []byte `kmip:"DATA"`
+	CorrelationValue []byte `kmip:"CORRELATION_VALUE"`
+}
+
+// SignRequest is a Sign Request Payload
+type SignRequest struct {
+	UniqueIdentifier string       `kmip:"UNIQUE_IDENTIFIER"`
+	CryptoParams     CryptoParams `kmip:"CRYPTOGRAPHIC_PARAMETERS"`
+	Data             []byte       `kmip:"DATA"`
+	CorrelationValue []byte       `kmip:"CORRELATION_VALUE"`
+	InitIndicator    bool         `kmip:"INIT_INDICATOR"`
+	FinalIndicator   bool         `kmip:"FINAL_INDICATOR"`
+}
+
+// SignResponse is a Sign Response Payload
+type SignResponse struct {
+	UniqueIdentifier string `kmip:"UNIQUE_IDENTIFIER,required"`
+	SignatureData    []byte `kmip:"SIGNATURE_DATA"`
+	CorrelationValue []byte `kmip:"CORRELATION_VALUE"`
 }

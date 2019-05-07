@@ -48,16 +48,26 @@ func (bi *ResponseBatchItem) BuildFieldValue(name string) (v interface{}, err er
 	switch bi.Operation {
 	case OPERATION_CREATE:
 		v = &CreateResponse{}
+	case OPERATION_CREATE_KEY_PAIR:
+		v = &CreateKeyPairResponse{}
 	case OPERATION_GET:
 		v = &GetResponse{}
 	case OPERATION_GET_ATTRIBUTES:
 		v = &GetAttributesResponse{}
 	case OPERATION_GET_ATTRIBUTE_LIST:
 		v = &GetAttributeListResponse{}
+	case OPERATION_ACTIVATE:
+		v = &ActivateResponse{}
+	case OPERATION_REVOKE:
+		v = &RevokeResponse{}
 	case OPERATION_DESTROY:
 		v = &DestroyResponse{}
 	case OPERATION_DISCOVER_VERSIONS:
 		v = &DiscoverVersionsResponse{}
+	case OPERATION_DECRYPT:
+		v = &DecryptResponse{}
+	case OPERATION_SIGN:
+		v = &SignResponse{}
 	default:
 		err = errors.Errorf("unsupported operation: %v", bi.Operation)
 	}
