@@ -168,6 +168,10 @@ func (s *EncoderSuite) TestEncodeMessageCreate() {
 								Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_USAGE_MASK,
 								Value: int32(12),
 							},
+							{
+								Name:  ATTRIBUTE_NAME_INITIAL_DATE,
+								Value: time.Unix(12345, 0),
+							},
 						},
 					},
 				},
