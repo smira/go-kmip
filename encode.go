@@ -86,6 +86,9 @@ func (e *Encoder) Encode(v interface{}) (err error) {
 func (e *Encoder) encodeValue(f field, rt reflect.Type, rv reflect.Value) (err error) {
 	if rv.Kind() == reflect.Interface && !rv.IsNil() {
 		rv = rv.Elem()
+		if rv.Kind() == reflect.Ptr {
+			rv = rv.Elem()
+		}
 		rt = rv.Type()
 
 		switch rt {
