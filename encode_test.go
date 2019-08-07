@@ -205,6 +205,30 @@ func (s *EncoderSuite) TestEncodeMessageGet() {
 	s.Assert().EqualValues(messageGet, buf.Bytes())
 }
 
+func (s *EncoderSuite) TestEncodeMessageGetPointer() {
+	var buf bytes.Buffer
+
+	getRequest := Request{
+		Header: RequestHeader{
+			Version:    ProtocolVersion{Major: 1, Minor: 1},
+			BatchCount: 1,
+		},
+		BatchItems: []RequestBatchItem{
+			{
+				Operation: OPERATION_GET,
+				RequestPayload: &GetRequest{
+					UniqueIdentifier: "49a1ca88-6bea-4fb2-b450-7e58802c3038",
+				},
+			},
+		},
+	}
+
+	err := NewEncoder(&buf).Encode(&getRequest)
+	s.Assert().NoError(err)
+
+	s.Assert().EqualValues(messageGet, buf.Bytes())
+}
+
 func TestEncoderSuite(t *testing.T) {
 	suite.Run(t, new(EncoderSuite))
 }
