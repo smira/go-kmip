@@ -773,6 +773,75 @@ const (
 	CRYPTO_USAGE_MASK_TRANSLATE_UNWRAP    Enum = 0x00080000
 )
 
+// KMIP Block Cipher Mode Enumeration.
+const (
+	BLOCK_MODE_CBC               Enum = 0x00000001
+	BLOCK_MODE_ECB               Enum = 0x00000002
+	BLOCK_MODE_PCBC              Enum = 0x00000003
+	BLOCK_MODE_CFB               Enum = 0x00000004
+	BLOCK_MODE_OFB               Enum = 0x00000005
+	BLOCK_MODE_CTR               Enum = 0x00000006
+	BLOCK_MODE_CMAC              Enum = 0x00000007
+	BLOCK_MODE_CCM               Enum = 0x00000008
+	BLOCK_MODE_GCM               Enum = 0x00000009
+	BLOCK_MODE_CBC_MAC           Enum = 0x0000000A
+	BLOCK_MODE_XTS               Enum = 0x0000000B
+	BLOCK_MODE_AESKeyWrapPadding Enum = 0x0000000C
+	BLOCK_MODE_NISTKeyWrap       Enum = 0x0000000D
+	BLOCK_MODE_X9_102_AESKW      Enum = 0x0000000E
+	BLOCK_MODE_X9_102_TDKW       Enum = 0x0000000F
+	BLOCK_MODE_X9_102_AKW1       Enum = 0x00000010
+	BLOCK_MODE_X9_102_AKW2       Enum = 0x00000011
+	BLOCK_MODE_AEAD              Enum = 0x00000012
+)
+
+// KMIP Attribute Names.
+const (
+	ATTRIBUTE_NAME_UNIQUE_IDENTIFIER                = "Unique Identifier"
+	ATTRIBUTE_NAME_NAME                             = "Name"
+	ATTRIBUTE_NAME_OBJECT_TYPE                      = "Object Type"
+	ATTRIBUTE_NAME_CRYPTOGRAPHIC_ALGORITHM          = "Cryptographic Algorithm"
+	ATTRIBUTE_NAME_CRYPTOGRAPHIC_LENGTH             = "Cryptographic Length"
+	ATTRIBUTE_NAME_CRYPTOGRAPHIC_PARAMETERS         = "Cryptographic Parameters"
+	ATTRIBUTE_NAME_CRYPTOGRAPHIC_DOMAIN_PARAMETERS  = "Cryptographic Domain Parameters"
+	ATTRIBUTE_NAME_CERTIFICATE_TYPE                 = "Certificate Type"
+	ATTRIBUTE_NAME_CERTIFICATE_LENGTH               = "Certificate Length"
+	ATTRIBUTE_NAME_X_509_CERTIFICATE_IDENTIFIER     = "X.509 Certificate Identifier"
+	ATTRIBUTE_NAME_X_509_CERTIFICATE_SUBJECT        = "X.509 Certificate Subject"
+	ATTRIBUTE_NAME_X_509_CERTIFICATE_ISSUER         = "X.509 Certificate Issuer"
+	ATTRIBUTE_NAME_CERTIFICATE_IDENTIFIER           = "Certificate Identifier"
+	ATTRIBUTE_NAME_CERTIFICATE_SUBJECT              = "Certificate Subject"
+	ATTRIBUTE_NAME_CERTIFICATE_ISSUER               = "Certificate Issuer"
+	ATTRIBUTE_NAME_DIGITAL_SIGNATURE_ALGORITHM      = "Digital Signature Algorithm"
+	ATTRIBUTE_NAME_DIGEST                           = "Digest"
+	ATTRIBUTE_NAME_OPERATION_POLICY_NAME            = "Operation Policy Name"
+	ATTRIBUTE_NAME_CRYPTOGRAPHIC_USAGE_MASK         = "Cryptographic Usage Mask"
+	ATTRIBUTE_NAME_LEASE_TIME                       = "Lease Time"
+	ATTRIBUTE_NAME_USAGE_LIMITS                     = "Usage Limits"
+	ATTRIBUTE_NAME_STATE                            = "State"
+	ATTRIBUTE_NAME_INITIAL_DATE                     = "Initial Date"
+	ATTRIBUTE_NAME_ACTIVATION_DATE                  = "Activation Date"
+	ATTRIBUTE_NAME_PROCESS_START_DATE               = "Process Start Date"
+	ATTRIBUTE_NAME_PROTECT_STOP_DATE                = "Protect Stop Date"
+	ATTRIBUTE_NAME_DEACTIVATION_DATE                = "Deactivation Date"
+	ATTRIBUTE_NAME_DESTROY_DATE                     = "Destroy Date"
+	ATTRIBUTE_NAME_COMPROMISE_OCCURRENCE_DATE       = "Compromise Occurrence Date"
+	ATTRIBUTE_NAME_COMPROMISE_DATE                  = "Compromise Date"
+	ATTRIBUTE_NAME_REVOCATION_REASON                = "Revocation Reason"
+	ATTRIBUTE_NAME_ARCHIVE_DATE                     = "Archive Date"
+	ATTRIBUTE_NAME_OBJECT_GROUP                     = "Object Group"
+	ATTRIBUTE_NAME_FRESH                            = "Fresh"
+	ATTRIBUTE_NAME_LINK                             = "Link"
+	ATTRIBUTE_NAME_APPLICATION_SPECIFIC_INFORMATION = "Application Specific Information"
+	ATTRIBUTE_NAME_CONTACT_INFORMATION              = "Contact Information"
+	ATTRIBUTE_NAME_LAST_CHANGE_DATE                 = "Last Change Date"
+	ATTRIBUTE_NAME_CUSTOM_ATTRIBUTE                 = "Custom Attribute"
+	ATTRIBUTE_NAME_ALTERNATIVE_NAME                 = "Alternative Name"
+	ATTRIBUTE_NAME_KEY_VALUE_PRESENT                = "Key Value Present"
+	ATTRIBUTE_NAME_KEY_VALUE_LOCATION               = "Key Value Location"
+	ATTRIBUTE_NAME_ORIGINAL_CREATION_DATE           = "Original Creation Date"
+)
+
 var tagMap = map[string]Tag{
 	"-":                                        ANY_TAG,
 	"ANY_TAG":                                  ANY_TAG,

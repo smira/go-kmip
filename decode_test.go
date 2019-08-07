@@ -190,15 +190,15 @@ func (s *DecoderSuite) TestDecodeMessageCreate() {
 						TemplateAttribute: TemplateAttribute{
 							Attributes: []Attribute{
 								{
-									Name:  "Cryptographic Algorithm",
+									Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_ALGORITHM,
 									Value: CRYPTO_AES,
 								},
 								{
-									Name:  "Cryptographic Length",
+									Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_LENGTH,
 									Value: int32(128),
 								},
 								{
-									Name:  "Cryptographic Usage Mask",
+									Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_USAGE_MASK,
 									Value: int32(12),
 								},
 							},

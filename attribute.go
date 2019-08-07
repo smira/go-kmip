@@ -22,19 +22,19 @@ type Attribute struct {
 // BuildFieldValue builds dynamic Value field
 func (a *Attribute) BuildFieldValue(name string) (v interface{}, err error) {
 	switch a.Name {
-	case "Cryptographic Algorithm":
+	case ATTRIBUTE_NAME_CRYPTOGRAPHIC_ALGORITHM:
 		v = Enum(0)
-	case "Cryptographic Length", "Cryptographic Usage Mask":
+	case ATTRIBUTE_NAME_CRYPTOGRAPHIC_LENGTH, ATTRIBUTE_NAME_CRYPTOGRAPHIC_USAGE_MASK:
 		v = int32(0)
-	case "Unique Identifier":
+	case ATTRIBUTE_NAME_UNIQUE_IDENTIFIER, ATTRIBUTE_NAME_OPERATION_POLICY_NAME:
 		v = ""
-	case "Object Type":
+	case ATTRIBUTE_NAME_OBJECT_TYPE, ATTRIBUTE_NAME_STATE:
 		v = Enum(0)
-	case "Initial Date", "Last Change Date":
+	case ATTRIBUTE_NAME_INITIAL_DATE, ATTRIBUTE_NAME_LAST_CHANGE_DATE:
 		v = time.Time{}
-	case "Name":
+	case ATTRIBUTE_NAME_NAME:
 		v = &Name{}
-	case "Digest":
+	case ATTRIBUTE_NAME_DIGEST:
 		v = &Digest{}
 	default:
 		err = errors.Errorf("unsupported attribute: %v", a.Name)
