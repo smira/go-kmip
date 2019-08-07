@@ -132,15 +132,38 @@ type QueryResponse struct {
 	VendorIdentification string `kmip:"VENDOR_IDENTIFICATION"`
 }
 
+// EncryptRequest is an Encrypt Request Payload
+type EncryptRequest struct {
+	UniqueIdentifier string       `kmip:"UNIQUE_IDENTIFIER"`
+	CryptoParams     CryptoParams `kmip:"CRYPTOGRAPHIC_PARAMETERS"`
+	Data             []byte       `kmip:"DATA"`
+	IVCounterNonce   []byte       `kmip:"IV_COUNTER_NONCE"`
+	CorrelationValue []byte       `kmip:"CORRELATION_VALUE"`
+	InitIndicator    bool         `kmip:"INIT_INDICATOR"`
+	FinalIndicator   bool         `kmip:"FINAL_INDICATOR"`
+	AdditionalData   []byte       `kmip:"AUTHENTICATED_ENCRYPTION_ADDITIONAL_DATA"`
+}
+
+// EncryptResponse is a Encrypt Response Payload
+type EncryptResponse struct {
+	UniqueIdentifier string `kmip:"UNIQUE_IDENTIFIER,required"`
+	Data             []byte `kmip:"DATA"`
+	IVCounterNonce   []byte `kmip:"IV_COUNTER_NONCE"`
+	CorrelationValue []byte `kmip:"CORRELATION_VALUE"`
+	AuthTag          []byte `kmip:"AUTHENTICATED_ENCRYPTION_TAG"`
+}
+
 // DecryptRequest is a Decrypt Request Payload
 type DecryptRequest struct {
 	UniqueIdentifier string       `kmip:"UNIQUE_IDENTIFIER"`
 	CryptoParams     CryptoParams `kmip:"CRYPTOGRAPHIC_PARAMETERS"`
 	Data             []byte       `kmip:"DATA"`
-	IVCounterNone    []byte       `kmip:"IV_COUNTER_NONCE"`
+	IVCounterNonce   []byte       `kmip:"IV_COUNTER_NONCE"`
 	CorrelationValue []byte       `kmip:"CORRELATION_VALUE"`
 	InitIndicator    bool         `kmip:"INIT_INDICATOR"`
 	FinalIndicator   bool         `kmip:"FINAL_INDICATOR"`
+	AdditionalData   []byte       `kmip:"AUTHENTICATED_ENCRYPTION_ADDITIONAL_DATA"`
+	AuthTag          []byte       `kmip:"AUTHENTICATED_ENCRYPTION_TAG"`
 }
 
 // DecryptResponse is a Decrypt Response Payload
