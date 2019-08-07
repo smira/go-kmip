@@ -64,6 +64,8 @@ func (bi *ResponseBatchItem) BuildFieldValue(name string) (v interface{}, err er
 		v = &DestroyResponse{}
 	case OPERATION_DISCOVER_VERSIONS:
 		v = &DiscoverVersionsResponse{}
+	case OPERATION_ENCRYPT:
+		v = &EncryptResponse{}
 	case OPERATION_DECRYPT:
 		v = &DecryptResponse{}
 	case OPERATION_SIGN:
