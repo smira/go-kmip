@@ -256,6 +256,9 @@ func (d *Decoder) decodeValue(f field, t reflect.Type, ff reflect.Value) (n int,
 			case typeOfString:
 				f.typ = TEXT_STRING
 				return d.decodeValue(f, t, ff)
+			case typeOfTime:
+				f.typ = DATE_TIME
+				return d.decodeValue(f, t, ff)
 			}
 
 			sD, err = getStructDesc(vv.Type().Elem())
