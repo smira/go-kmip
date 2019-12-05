@@ -220,3 +220,10 @@ type LocateResponse struct {
 	LocatedItems      int32    `kmip:"LOCATED_ITEMS"`
 	UniqueIdentifiers []string `kmip:"UNIQUE_IDENTIFIER"`
 }
+type ReKeyRequest struct {
+	UniqueIdentifier string `kmip:"UNIQUE_IDENTIFIER,required"`
+}
+
+type ReKeyResponse struct {
+	UniqueIdentifier string `kmip:"UNIQUE_IDENTIFIER,required"`
+}
