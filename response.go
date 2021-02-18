@@ -70,6 +70,10 @@ func (bi *ResponseBatchItem) BuildFieldValue(name string) (v interface{}, err er
 		v = &DecryptResponse{}
 	case OPERATION_SIGN:
 		v = &SignResponse{}
+	case OPERATION_REGISTER:
+		v = &RegisterResponse{}
+	case OPERATION_LOCATE:
+		v = &LocateResponse{}
 	default:
 		err = errors.Errorf("unsupported operation: %v", bi.Operation)
 	}
