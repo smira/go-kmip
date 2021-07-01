@@ -32,7 +32,7 @@ func (s *ServerSuite) SetupSuite() {
 	s.Require().NoError(s.certs.Generate([]string{"localhost"}, []net.IP{net.IPv4(127, 0, 0, 1)}))
 
 	s.server.Addr = "localhost:"
-	s.server.TLSConfig = &tls.Config{}
+	s.server.TLSConfig = &tls.Config{} //nolint:gosec
 	DefaultServerTLSConfig(s.server.TLSConfig)
 	s.server.TLSConfig.ClientCAs = s.certs.CAPool
 	s.server.TLSConfig.Certificates = []tls.Certificate{
@@ -66,7 +66,7 @@ func (s *ServerSuite) SetupTest() {
 	s.Require().NoError(err)
 
 	s.client.Endpoint = "localhost:" + port
-	s.client.TLSConfig = &tls.Config{}
+	s.client.TLSConfig = &tls.Config{} //nolint:gosec
 	DefaultClientTLSConfig(s.client.TLSConfig)
 	s.client.TLSConfig.RootCAs = s.certs.CAPool
 	s.client.TLSConfig.Certificates = []tls.Certificate{
@@ -160,7 +160,7 @@ func (s *ServerSuite) TestSessionAuthHandlerFail() {
 	s.Require().NoError(s.client.Connect())
 
 	_, err := s.client.DiscoverVersions(nil)
-	s.Require().Regexp("broken pipe$", errors.Cause(err).Error())
+	s.Require().Regexp("(broken pipe|EOF)$", errors.Cause(err).Error())
 
 	s.client.Close()
 }
@@ -172,7 +172,16 @@ func (s *ServerSuite) TestConnectTLSNoCert() {
 		s.client.TLSConfig.Certificates = savedCerts
 	}()
 
-	s.Require().EqualError(errors.Cause(s.client.Connect()), "remote error: tls: bad certificate")
+	err := s.client.Connect()
+	if err != nil {
+		s.Require().EqualError(errors.Cause(err), "remote error: tls: bad certificate")
+	} else {
+		_, err = s.client.DiscoverVersions(nil)
+
+		s.Require().Error(err)
+	}
+
+	s.client.Close() //nolint:errcheck
 }
 
 func (s *ServerSuite) TestConnectTLSNoCA() {
