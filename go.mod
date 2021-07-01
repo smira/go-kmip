@@ -1,4 +1,6 @@
-module github.com/smira/go-kmip
+module github.com/akeylesslabs/go-kmip
+
+go 1.16
 
 require (
 	github.com/pkg/errors v0.8.1
