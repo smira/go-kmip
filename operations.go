@@ -189,3 +189,41 @@ type SignResponse struct {
 	SignatureData    []byte `kmip:"SIGNATURE_DATA"`
 	CorrelationValue []byte `kmip:"CORRELATION_VALUE"`
 }
+
+// RegisterRequest is a Register Request Payload
+type RegisterRequest struct {
+	ObjectType        Enum              `kmip:"OBJECT_TYPE,required"`
+	TemplateAttribute TemplateAttribute `kmip:"TEMPLATE_ATTRIBUTE,required"`
+	// Request might contain one of SymmetricKey, Certificate, ...
+	SymmetricKey SymmetricKey `kmip:"SYMMETRIC_KEY"`
+	PrivateKey   PrivateKey   `kmip:"PRIVATE_KEY"`
+	PublicKey    PublicKey    `kmip:"PUBLIC_KEY"`
+}
+
+// RegisterResponse is a Register Response Payload
+type RegisterResponse struct {
+	UniqueIdentifier  string            `kmip:"UNIQUE_IDENTIFIER,required"`
+	TemplateAttribute TemplateAttribute `kmip:"TEMPLATE_ATTRIBUTE"`
+}
+
+// LocateRequest is a Locate Request Payload
+type LocateRequest struct {
+	MaximumItems      int32      `kmip:"MAXIMUM_ITEMS"`
+	OffsetItems       int32      `kmip:"OFFSET_ITEMS"`
+	StorageStatusMask int32      `kmip:"STORAGE_STATUS_MASK"`
+	ObjectGroupMember Enum       `kmip:"OBJECT_GROUP_MEMBER"`
+	Attributes        Attributes `kmip:"ATTRIBUTE"`
+}
+
+// LocateResponse is a Locate Response Payload
+type LocateResponse struct {
+	LocatedItems      int32    `kmip:"LOCATED_ITEMS"`
+	UniqueIdentifiers []string `kmip:"UNIQUE_IDENTIFIER"`
+}
+type ReKeyRequest struct {
+	UniqueIdentifier string `kmip:"UNIQUE_IDENTIFIER,required"`
+}
+
+type ReKeyResponse struct {
+	UniqueIdentifier string `kmip:"UNIQUE_IDENTIFIER,required"`
+}
