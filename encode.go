@@ -212,7 +212,9 @@ func (e *Encoder) encode(rv reflect.Value, sd *structDesc) (err error) {
 					return
 				}
 
-				if isZero {
+				isVersion := f.name == "PROTOCOL_VERSION_MAJOR" || f.name == "PROTOCOL_VERSION_MINOR" || f.name == "PROTOCOL_VERSION"
+
+				if isZero && !isVersion {
 					continue
 				}
 			}
