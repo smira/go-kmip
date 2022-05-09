@@ -25,7 +25,7 @@ func (a *Authentication) BuildFieldValue(name string) (v interface{}, err error)
 	return
 }
 
-// CredentialUsernamePassword is a Credential structure for username/password authentication
+// CredentialUsernamePassword is a CredentialValue structure for username/password authentication
 type CredentialUsernamePassword struct {
 	Tag `kmip:"CREDENTIAL_VALUE"`
 
@@ -33,6 +33,7 @@ type CredentialUsernamePassword struct {
 	Password string `kmip:"PASSWORD,required"`
 }
 
+// Credential is a structure for that contains a credentail value and type
 type Credential struct {
 	Tag `kmip:"CREDENTIAL"`
 
