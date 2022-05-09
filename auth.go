@@ -10,7 +10,7 @@ import "github.com/pkg/errors"
 type Authentication struct {
 	Tag `kmip:"AUTHENTICATION"`
 
-	Credential Credential `kmip:"CREDENTIAL,required"`
+	Credential Credential `kmip:"CREDENTIAL"`
 }
 
 // BuildFieldValue builds value for CredentialValue based on CredentialType
