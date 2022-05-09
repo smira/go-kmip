@@ -10,6 +10,7 @@ import "github.com/pkg/errors"
 type Authentication struct {
 	Tag `kmip:"AUTHENTICATION"`
 
+	Credential      interface{} `kmip:"CREDENTIAL,skip"`
 	CredentialType  Enum        `kmip:"CREDENTIAL_TYPE,required"`
 	CredentialValue interface{} `kmip:"CREDENTIAL_VALUE,required"`
 }
