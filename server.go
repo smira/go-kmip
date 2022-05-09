@@ -322,7 +322,7 @@ func (s *Server) handleBatch(session *SessionContext, req *Request) (resp *Respo
 		SessionContext: *session,
 	}
 
-	if req.Header.Authentication.CredentialType != 0 {
+	if req.Header.Authentication.Credential.CredentialType != 0 {
 		if s.RequestAuthHandler == nil {
 			err = errors.New("request has authentication set, but no auth handler configured")
 			return

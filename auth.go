@@ -10,18 +10,16 @@ import "github.com/pkg/errors"
 type Authentication struct {
 	Tag `kmip:"AUTHENTICATION"`
 
-	Credential      interface{} `kmip:"CREDENTIAL,skip"`
-	CredentialType  Enum        `kmip:"CREDENTIAL_TYPE,required"`
-	CredentialValue interface{} `kmip:"CREDENTIAL_VALUE,required"`
+	Credential Credential `kmip:"CREDENTIAL,required"`
 }
 
 // BuildFieldValue builds value for CredentialValue based on CredentialType
 func (a *Authentication) BuildFieldValue(name string) (v interface{}, err error) {
-	switch a.CredentialType {
+	switch a.Credential.CredentialType {
 	case CREDENTIAL_TYPE_USERNAME_AND_PASSWORD:
 		v = &CredentialUsernamePassword{}
 	default:
-		err = errors.Errorf("unsupported credential type: %v", a.CredentialType)
+		err = errors.Errorf("unsupported credential type: %v", a.Credential.CredentialType)
 	}
 
 	return
@@ -33,4 +31,11 @@ type CredentialUsernamePassword struct {
 
 	Username string `kmip:"USERNAME,required"`
 	Password string `kmip:"PASSWORD,required"`
+}
+
+type Credential struct {
+	Tag `kmip:"CREDENTIAL"`
+
+	CredentialType  Enum        `kmip:"CREDENTIAL_TYPE,required"`
+	CredentialValue interface{} `kmip:"CREDENTIAL_VALUE,required"`
 }
