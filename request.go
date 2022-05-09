@@ -22,18 +22,19 @@ type Request struct {
 type RequestHeader struct {
 	Tag `kmip:"REQUEST_HEADER"`
 
-	Version                      ProtocolVersion `kmip:"PROTOCOL_VERSION,required"`
-	MaxResponseSize              int32           `kmip:"MAXIMUM_RESPONSE_SIZE"`
-	ClientCorrelationValue       string          `kmip:"CLIENT_CORRELATION_VALUE"`
-	ServerCorrelationValue       string          `kmip:"SERVER_CORRELATION_VALUE"`
-	AsynchronousIndicator        bool            `kmip:"ASYNCHRONOUS_INDICATOR"`
-	AttestationCapableIndicator  bool            `kmip:"ATTESTATION_CAPABLE_INDICATOR"`
-	AttestationType              []Enum          `kmip:"ATTESTATION_TYPE"`
-	Authentication               Authentication  `kmip:"AUTHENTICATION"`
-	BatchErrorContinuationOption Enum            `kmip:"BATCH_ERROR_CONTINUATION_OPTION"`
-	BatchOrderOption             bool            `kmip:"BATCH_ORDER_OPTION"`
-	TimeStamp                    time.Time       `kmip:"TIME_STAMP"`
-	BatchCount                   int32           `kmip:"BATCH_COUNT,required"`
+	Version                     ProtocolVersion `kmip:"PROTOCOL_VERSION,required"`
+	MaxResponseSize             int32           `kmip:"MAXIMUM_RESPONSE_SIZE"`
+	ClientCorrelationValue      string          `kmip:"CLIENT_CORRELATION_VALUE"`
+	ServerCorrelationValue      string          `kmip:"SERVER_CORRELATION_VALUE"`
+	AsynchronousIndicator       bool            `kmip:"ASYNCHRONOUS_INDICATOR"`
+	AttestationCapableIndicator bool            `kmip:"ATTESTATION_CAPABLE_INDICATOR"`
+	AttestationType             []Enum          `kmip:"ATTESTATION_TYPE"`
+	// Request authentication not implemented for now
+	Authentication               Authentication `kmip:"AUTHENTICATION,skip"`
+	BatchErrorContinuationOption Enum           `kmip:"BATCH_ERROR_CONTINUATION_OPTION"`
+	BatchOrderOption             bool           `kmip:"BATCH_ORDER_OPTION"`
+	TimeStamp                    time.Time      `kmip:"TIME_STAMP"`
+	BatchCount                   int32          `kmip:"BATCH_COUNT,required"`
 }
 
 // RequestBatchItem is a Request Batch Item Structure

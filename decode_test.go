@@ -213,6 +213,91 @@ func (s *DecoderSuite) TestDecodeMessageCreate() {
 		}, m)
 }
 
+func (s *DecoderSuite) TestDecodeMessageCreateWithAuthentication() {
+	var m Request
+	var buf bytes.Buffer
+
+	c := Request{
+		Header: RequestHeader{
+			Version:    ProtocolVersion{Major: 1, Minor: 1},
+			BatchCount: 1,
+			Authentication: Authentication{
+				Credential: Credential{
+					CredentialType:  CREDENTIAL_TYPE_DEVICE,
+					CredentialValue: nil,
+				},
+			},
+		},
+		BatchItems: []RequestBatchItem{
+			{
+				Operation: OPERATION_CREATE,
+				RequestPayload: CreateRequest{
+					ObjectType: OBJECT_TYPE_SYMMETRIC_KEY,
+					TemplateAttribute: TemplateAttribute{
+						Attributes: []Attribute{
+							{
+								Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_ALGORITHM,
+								Value: CRYPTO_AES,
+							},
+							{
+								Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_LENGTH,
+								Value: int32(128),
+							},
+							{
+								Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_USAGE_MASK,
+								Value: int32(12),
+							},
+							{
+								Name:  ATTRIBUTE_NAME_INITIAL_DATE,
+								Value: time.Unix(12345, 0),
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	err := NewEncoder(&buf).Encode(c)
+
+	err = NewDecoder(bytes.NewReader(buf.Bytes())).Decode(&m)
+	s.Assert().NoError(err)
+	s.Assert().Equal(
+		Request{
+			Header: RequestHeader{
+				Version:    ProtocolVersion{Major: 1, Minor: 1},
+				BatchCount: 1,
+			},
+			BatchItems: []RequestBatchItem{
+				{
+					Operation: OPERATION_CREATE,
+					RequestPayload: CreateRequest{
+						ObjectType: OBJECT_TYPE_SYMMETRIC_KEY,
+						TemplateAttribute: TemplateAttribute{
+							Attributes: []Attribute{
+								{
+									Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_ALGORITHM,
+									Value: CRYPTO_AES,
+								},
+								{
+									Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_LENGTH,
+									Value: int32(128),
+								},
+								{
+									Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_USAGE_MASK,
+									Value: int32(12),
+								},
+								{
+									Name:  ATTRIBUTE_NAME_INITIAL_DATE,
+									Value: time.Unix(12345, 0),
+								},
+							},
+						},
+					},
+				},
+			},
+		}, m)
+}
+
 func (s *DecoderSuite) TestDecodeMessageGet() {
 	var m Request
 
