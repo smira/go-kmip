@@ -842,6 +842,24 @@ const (
 	ATTRIBUTE_NAME_ORIGINAL_CREATION_DATE           = "Original Creation Date"
 )
 
+// kmip query functions
+const (
+	QUERY_OPERATIONS                  Enum = 0x00000001
+	QUERY_OBJECTS                     Enum = 0x00000002
+	QUERY_SERVER_INFORMATION          Enum = 0x00000003
+	QUERY_APPLICATION_NAMESPACES      Enum = 0x00000004
+	QUERY_EXTENSION_LIST              Enum = 0x00000005
+	QUERY_EXTENSION_MAP               Enum = 0x00000006
+	QUERY_ATTESTATION_TYPES           Enum = 0x00000007
+	QUERY_RNGS                        Enum = 0x00000008
+	QUERY_VALIDATIONS                 Enum = 0x00000009
+	QUERY_PROFILES                    Enum = 0x0000000A
+	QUERY_CAPABILITIES                Enum = 0x0000000B
+	QUERY_CLIENT_REGISTRATION_METHODS Enum = 0x0000000C
+	QUERY_DEFAULTS_INFORMATION        Enum = 0x0000000D
+	QUERY_STORAGE_PROTECTION_MASKS    Enum = 0x0000000E
+)
+
 var tagMap = map[string]Tag{
 	"-":                                        ANY_TAG,
 	"ANY_TAG":                                  ANY_TAG,
