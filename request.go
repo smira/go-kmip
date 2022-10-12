@@ -72,6 +72,12 @@ func (bi *RequestBatchItem) BuildFieldValue(name string) (v interface{}, err err
 		v = &RevokeRequest{}
 	case OPERATION_REKEY:
 		v = &ReKeyRequest{}
+	case OPERATION_DECRYPT:
+		v = &DecryptRequest{}
+	case OPERATION_ENCRYPT:
+		v = &EncryptRequest{}
+	case OPERATION_QUERY:
+		v = &QueryRequest{}
 	default:
 		err = errors.Errorf("unsupported operation: %v", bi.Operation)
 	}
