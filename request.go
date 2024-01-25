@@ -52,6 +52,8 @@ func (bi *RequestBatchItem) BuildFieldValue(name string) (v interface{}, err err
 	switch bi.Operation {
 	case OPERATION_CREATE:
 		v = &CreateRequest{}
+	case OPERATION_CREATE_KEY_PAIR:
+		v = &CreateKeyPairRequest{}
 	case OPERATION_GET:
 		v = &GetRequest{}
 	case OPERATION_GET_ATTRIBUTES:
