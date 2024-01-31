@@ -213,6 +213,72 @@ func (s *DecoderSuite) TestDecodeMessageCreate() {
 		}, m)
 }
 
+func (s *DecoderSuite) TestDecodeMessageCreateKeyPair() {
+	var m Request
+
+	decoder := NewDecoder(bytes.NewReader(messageCreateKeyPair))
+
+	err := decoder.Decode(&m)
+	s.Assert().NoError(err)
+
+	s.Assert().Equal(
+		Request{
+			Header: RequestHeader{
+				Version:    ProtocolVersion{Major: 1, Minor: 1},
+				BatchCount: 1,
+			},
+			BatchItems: []RequestBatchItem{
+				{
+					Operation: OPERATION_CREATE_KEY_PAIR,
+					RequestPayload: CreateKeyPairRequest{
+						CommonTemplateAttribute: TemplateAttribute{
+							Attributes: Attributes{
+								{
+									Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_ALGORITHM,
+									Value: CRYPTO_RSA,
+								},
+								{
+									Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_LENGTH,
+									Value: int32(2048),
+								},
+							},
+						},
+						PrivateKeyTemplateAttribute: TemplateAttribute{
+							Attributes: Attributes{
+								{
+									Name: ATTRIBUTE_NAME_NAME,
+									Value: Name{
+										Value: "test_private",
+										Type:  NAME_TYPE_UNINTERPRETED_TEXT_STRING,
+									},
+								},
+								{
+									Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_USAGE_MASK,
+									Value: int32(CRYPTO_USAGE_MASK_SIGN),
+								},
+							},
+						},
+						PublicKeyTemplateAttribute: TemplateAttribute{
+							Attributes: Attributes{
+								{
+									Name: ATTRIBUTE_NAME_NAME,
+									Value: Name{
+										Value: "test_public",
+										Type:  NAME_TYPE_UNINTERPRETED_TEXT_STRING,
+									},
+								},
+								{
+									Name:  ATTRIBUTE_NAME_CRYPTOGRAPHIC_USAGE_MASK,
+									Value: int32(CRYPTO_USAGE_MASK_VERIFY),
+								},
+							},
+						},
+					},
+				},
+			},
+		}, m)
+}
+
 func (s *DecoderSuite) TestDecodeMessageCreateWithAuthentication() {
 	var m Request
 	var buf bytes.Buffer
