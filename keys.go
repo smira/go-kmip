@@ -111,5 +111,5 @@ type KeyValue struct {
 
 type OpaqueObject struct {
 	OpaqueDataType  Enum   `kmip:"OPAQUE_DATA_TYPE"`
-	OpaqueDataValue []byte `kmip:"OPAQ_DATA_VALUE"`
+	OpaqueDataValue []byte `kmip:"OPAQUE_DATA_VALUE"`
 }
