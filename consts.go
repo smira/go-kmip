@@ -1274,3 +1274,10 @@ var operationMap = map[Enum]string{
 	OPERATION_INTEROP:              "OPERATION_INTEROP",
 	OPERATION_REPROVISION:          "OPERATION_REPROVISION",
 }
+
+type CertificateType uint32
+
+const (
+	CertificateTypeX_509 CertificateType = 0x00000001
+	CertificateTypePGP   CertificateType = 0x00000002
+)
