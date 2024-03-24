@@ -1275,9 +1275,7 @@ var operationMap = map[Enum]string{
 	OPERATION_REPROVISION:          "OPERATION_REPROVISION",
 }
 
-type CertificateType uint32
-
 const (
-	CertificateTypeX_509 CertificateType = 0x00000001
-	CertificateTypePGP   CertificateType = 0x00000002
+	X_509 Enum = 0x00000001
+	PGP   Enum = 0x00000002
 )
