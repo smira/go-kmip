@@ -110,6 +110,8 @@ type KeyValue struct {
 }
 
 type OpaqueObject struct {
+	Tag `kmip:"OPAQUE_OBJECT"`
+
 	OpaqueDataType  Enum   `kmip:"OPAQUE_DATA_TYPE"`
 	OpaqueDataValue []byte `kmip:"OPAQUE_DATA_VALUE"`
 }
