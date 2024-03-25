@@ -1280,3 +1280,5 @@ const (
 	X_509 Enum = 0x00000001
 	PGP   Enum = 0x00000002
 )
+
+const OpaqueDataType_NONE Enum = 0x80000000
